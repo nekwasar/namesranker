@@ -56,9 +56,10 @@ export async function POST(req: NextRequest) {
   await sendEmail(magicLinkEmail(email, finalUrl.toString()));
 
   // Anti-enumeration: identical response whether or not the email exists.
-  // In dev/test only, return the URL so local e2e tests can complete the flow.
+  // When E2E_MAGIC_LINK_DEV=1 (test server only), return the URL so e2e tests
+  // can complete the flow. Never enabled in production.
   const body: Record<string, unknown> = { ok: true };
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.E2E_MAGIC_LINK_DEV === "1") {
     body.devUrl = finalUrl.toString();
   }
   return NextResponse.json(body, { status: 200 });

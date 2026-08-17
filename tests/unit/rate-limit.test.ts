@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import { rateLimit } from "@/lib/rate-limit";
 
+async function freshRateLimit() {
+  vi.resetModules();
+  const mod = await import("@/lib/rate-limit");
+  return mod.rateLimit;
+}
+
 describe("rateLimit", () => {
   it("allows requests when no Redis is configured (local dev/test)", async () => {
     delete process.env.REDIS_URL;
@@ -14,8 +20,10 @@ describe("rateLimit", () => {
     process.env.REDIS_URL = "https://example.upstash.io";
     process.env.REDIS_TOKEN = "token";
 
-    // Stub redis.pipeline() to simulate 3 existing hits.
+    const rateLimit = await freshRateLimit();
     const { redis } = await import("@/lib/redis");
+    if (!redis) throw new Error("redis not configured in test");
+
     const fakePipe = {
       zremrangebyscore: vi.fn(() => fakePipe),
       zcard: vi.fn(() => fakePipe),
@@ -38,7 +46,10 @@ describe("rateLimit", () => {
     process.env.REDIS_URL = "https://example.upstash.io";
     process.env.REDIS_TOKEN = "token";
 
+    const rateLimit = await freshRateLimit();
     const { redis } = await import("@/lib/redis");
+    if (!redis) throw new Error("redis not configured in test");
+
     const fakePipe = {
       zremrangebyscore: vi.fn(() => fakePipe),
       zcard: vi.fn(() => fakePipe),

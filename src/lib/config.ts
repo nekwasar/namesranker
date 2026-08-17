@@ -3,26 +3,30 @@
  * the premium domain (`ra-nk.me`) can be swapped cleanly via env (see spec §6).
  */
 
+const env = (key: string, fallback = ""): string => {
+  const value = process.env[key];
+  return value ? value : fallback;
+};
+
 export const config = {
-  baseDomain: process.env.BASE_DOMAIN ?? "namesranker.com",
-  raNkDomain: process.env.RA_NK_DOMAIN ?? "ra-nk.me",
-  appUrl:
-    process.env.NODE_ENV === "production"
-      ? `https://${process.env.VERCEL_URL ?? process.env.BASE_DOMAIN ?? "namesranker.com"}`
-      : (process.env.NEXTAUTH_URL ?? "http://localhost:3000"),
+  baseDomain: env("BASE_DOMAIN", "namesranker.com"),
+  raNkDomain: env("RA_NK_DOMAIN", "ra-nk.me"),
+  appUrl: env("NEXTAUTH_URL")
+    ? env("NEXTAUTH_URL")
+    : `https://${env("VERCEL_URL") || env("BASE_DOMAIN", "namesranker.com")}`,
   brevo: {
-    apiKey: process.env.BREVO_API_KEY ?? "",
-    senderEmail: process.env.BREVO_SENDER_EMAIL ?? "noreply@namesranker.com",
-    senderName: process.env.BREVO_SENDER_NAME ?? "NamesRanker",
+    apiKey: env("BREVO_API_KEY"),
+    senderEmail: env("BREVO_SENDER_EMAIL", "noreply@namesranker.com"),
+    senderName: env("BREVO_SENDER_NAME", "NamesRanker"),
   },
   stripe: {
-    secretKey: process.env.STRIPE_SECRET_KEY ?? "",
-    webhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
-    priceMonthly: process.env.STRIPE_PRICE_MONTHLY ?? "",
-    priceAnnual: process.env.STRIPE_PRICE_ANNUAL ?? "",
-    priceLifetime: process.env.STRIPE_PRICE_LIFETIME ?? "",
+    secretKey: env("STRIPE_SECRET_KEY"),
+    webhookSecret: env("STRIPE_WEBHOOK_SECRET"),
+    priceMonthly: env("STRIPE_PRICE_MONTHLY"),
+    priceAnnual: env("STRIPE_PRICE_ANNUAL"),
+    priceLifetime: env("STRIPE_PRICE_LIFETIME"),
   },
-  cronSecret: process.env.CRON_JOB_SECRET ?? "",
+  cronSecret: env("CRON_JOB_SECRET"),
 } as const;
 
 export const magicLinkTokenTtlMs = 15 * 60 * 1000; // 15 minutes

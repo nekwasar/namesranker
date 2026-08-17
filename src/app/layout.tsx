@@ -14,7 +14,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "NamesRanker — Own the #1 result for your name",
+  metadataBase: new URL("https://namesranker.com"),
+  title: {
+    default: "NamesRanker — Own the #1 result for your name",
+    template: "%s",
+  },
   description:
     "Searchable, SEO-engineered pages that rank your name first on Google. Claim your name before someone else does.",
 };

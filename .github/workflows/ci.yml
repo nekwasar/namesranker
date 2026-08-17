@@ -73,6 +73,13 @@ jobs:
         env:
           DATABASE_URL: postgresql://namesranker:namesranker@localhost:5432/namesranker?schema=public
 
+      - name: Seed keywords and demo profiles
+        run: |
+          npm run db:seed
+          npm run db:seed:demo
+        env:
+          DATABASE_URL: postgresql://namesranker:namesranker@localhost:5432/namesranker?schema=public
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 

@@ -2,8 +2,8 @@ import { redis } from "@/lib/redis";
 
 /**
  * Sliding-window rate limiter backed by Redis.
- * Falls back to a no-op when REDIS_URL is unset (local dev / tests) so flows
- * don't break, while remaining strict in deployed environments.
+ * Falls back to a no-op when Redis is not configured (local dev / tests) so
+ * flows don't break, while remaining strict in deployed environments.
  *
  * Spec §3.1: magic links limited per email/IP (e.g. 3/min).
  */
@@ -19,7 +19,8 @@ export async function rateLimit(
   limit: number,
   windowSeconds: number
 ): Promise<RateLimitResult> {
-  if (!process.env.REDIS_URL) {
+  const client = redis;
+  if (!client) {
     // No Redis configured: allow (local dev/test only).
     return { allowed: true, remaining: limit, retryAfterSeconds: 0 };
   }
@@ -29,7 +30,7 @@ export async function rateLimit(
   const redisKey = `ratelimit:${key}`;
 
   // Remove entries older than the window, count current hits, then add this hit.
-  const pipe = redis.pipeline();
+  const pipe = client.pipeline();
   pipe.zremrangebyscore(redisKey, 0, windowStart);
   pipe.zcard(redisKey);
   pipe.zadd(redisKey, { score: now, member: `${now}-${Math.random()}` });
