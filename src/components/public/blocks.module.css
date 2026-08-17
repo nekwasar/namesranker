@@ -1,0 +1,73 @@
+.photo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 16px;
+}
+
+.bio {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 60ch;
+}
+
+.muted {
+  color: #6b6b74;
+}
+
+.experience,
+.project,
+.publication,
+.testimonial {
+  margin-bottom: 16px;
+}
+
+.experience h4,
+.project h4 {
+  font-size: 1.05rem;
+  margin-bottom: 2px;
+}
+
+.project a,
+.publication a {
+  color: #4f6ef7;
+  font-weight: 500;
+}
+
+.socials {
+  list-style: none;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.socials a {
+  display: inline-block;
+  border: 1px solid #e6e6eb;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: border-color 0.15s ease;
+}
+
+.socials a:hover {
+  border-color: #4f6ef7;
+}
+
+.testimonial {
+  border-left: 3px solid #4f6ef7;
+  padding-left: 16px;
+}
+
+.testimonial blockquote {
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.testimonial figcaption {
+  color: #6b6b74;
+  font-size: 0.9rem;
+}

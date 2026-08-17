@@ -1,0 +1,84 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 56px 24px 96px;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.avatar {
+  margin-bottom: 16px;
+}
+
+.avatar :global(img) {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.descriptor {
+  color: #4f6ef7;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  color: #8a8a94;
+  margin-top: 8px;
+}
+
+.body {
+  margin-bottom: 24px;
+}
+
+.subNav {
+  margin: 32px 0;
+  padding: 20px;
+  background: #f7f7f9;
+  border-radius: 12px;
+}
+
+.subNav h2 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b6b74;
+  margin-bottom: 12px;
+}
+
+.subNav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.subNav a {
+  color: #4f6ef7;
+  font-weight: 500;
+}
+
+.section {
+  margin: 32px 0;
+}
+
+.section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e6e6eb;
+}
+
+.backLink {
+  margin-top: 40px;
+}
+
+.backLink a {
+  color: #4f6ef7;
+  font-weight: 500;
+}
