@@ -1,13 +1,17 @@
+import { requireUser } from "@/lib/auth/require";
+
 export const metadata = {
   title: "Claim your name — NamesRanker",
   description: "Claim your name before someone else does.",
 };
 
-export default function OnboardingPage() {
+export default async function OnboardingPage() {
+  const user = await requireUser();
+
   return (
     <main>
       <h1>Claim your name</h1>
-      <p>Onboarding wizard — under construction (M5).</p>
+      <p>Signed in as {user.email}. Onboarding wizard arrives in M5.</p>
     </main>
   );
 }
