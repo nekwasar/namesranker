@@ -8,6 +8,9 @@
 
 # testing
 /coverage
+/playwright-report/
+/test-results/
+/blob-report/
 
 # next.js
 /.next/
@@ -26,7 +29,14 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
+.env
 .env*.local
+
+# editor / agent tooling
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
 
 # vercel
 .vercel
@@ -34,3 +44,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma

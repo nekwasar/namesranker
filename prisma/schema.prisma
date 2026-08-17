@@ -1,0 +1,234 @@
+// NamesRanker — Prisma schema
+// Full data model per milestones.md §2. See product-spec.md for business rules.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Plan {
+  FREE
+  PREMIUM
+}
+
+enum ClaimType {
+  STANDARD
+  KEYWORD
+  ONE_WORD
+  CUSTOM
+}
+
+enum ClaimStatus {
+  CLAIMED
+  PROTECTED
+  PENDING_RELEASE
+  RELEASED
+}
+
+enum PageStatus {
+  DRAFT
+  PENDING
+  LIVE
+  REJECTED
+}
+
+enum ContentBlockType {
+  BIO
+  PHOTO
+  EXPERIENCE
+  PROJECT
+  TESTIMONIAL
+  SOCIAL
+  PUBLICATION
+  CUSTOM
+}
+
+enum ImportConnectorType {
+  RSS
+  GITHUB
+  YOUTUBE
+}
+
+enum ShowcaseStatus {
+  PENDING
+  LIVE
+  REJECTED
+}
+
+model User {
+  id                   String   @id @default(cuid())
+  email                String   @unique
+  plan                 Plan     @default(FREE)
+  stripeCustomerId     String?  @unique
+  stripeSubscriptionId String?  @unique
+  onboardedAt          DateTime?
+  onboardingStep       Int?
+  profilePhotoUrl      String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  claims        NameClaim[]
+  pages         Page[]
+  monitoring    NameMonitoringRule[]
+  auditLogs     AuditLog[]
+}
+
+model NameClaim {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  wordCount   Int
+  type        ClaimType
+  status      ClaimStatus @default(CLAIMED)
+  claimedById String
+  keyword     String?
+  claimedAt   DateTime    @default(now())
+  graceUntil  DateTime?
+
+  claimedBy User @relation(fields: [claimedById], references: [id], onDelete: Cascade)
+
+  @@index([claimedById])
+}
+
+model Page {
+  id              String     @id @default(cuid())
+  ownerId         String
+  isHub           Boolean    @default(false)
+  path            String     @unique
+  title           String
+  metaTitle       String?
+  metaDescription String?
+  descriptor      String?
+  status          PageStatus @default(DRAFT)
+  seoScore        Int?
+  customDomain    String?    @unique
+  publishedAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  owner      User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  blocks     ContentBlock[]
+  connectors ImportConnector[]
+  showcase   ShowcaseEntry?
+
+  @@index([ownerId])
+  @@index([status])
+}
+
+model ContentBlock {
+  id      String           @id @default(cuid())
+  pageId  String
+  type    ContentBlockType
+  payload Json
+  order   Int              @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId])
+}
+
+model ImportConnector {
+  id            String              @id @default(cuid())
+  pageId        String
+  type          ImportConnectorType
+  externalUrl   String
+  autoSync      Boolean             @default(false)
+  lastSyncedAt  DateTime?
+  createdAt     DateTime            @default(now())
+
+  page     Page              @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  contents ImportedContent[]
+
+  @@index([pageId])
+}
+
+model ImportedContent {
+  id          String   @id @default(cuid())
+  connectorId String
+  title       String
+  url         String
+  content     String?
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  connector ImportConnector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+
+  @@index([connectorId])
+}
+
+model Keyword {
+  id         String @id @default(cuid())
+  profession String
+  keyword    String
+
+  @@unique([profession, keyword])
+  @@index([profession])
+}
+
+model NameMonitoringRule {
+  id            String   @id @default(cuid())
+  userId        String
+  nameToMonitor String
+  lastAlertAt   DateTime?
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model SearchConsoleLink {
+  id                String   @id @default(cuid())
+  pageId            String   @unique
+  propertyUrl       String
+  oauthRefreshToken String
+  lastImportAt      DateTime?
+  createdAt         DateTime @default(now())
+
+  @@index([pageId])
+}
+
+model ShowcaseEntry {
+  id           String         @id @default(cuid())
+  pageId       String         @unique
+  domain       String
+  path         String
+  status       ShowcaseStatus @default(PENDING)
+  approvedById String?
+  approvedAt   DateTime?
+  createdAt    DateTime       @default(now())
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@unique([domain, path])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+}
+
+model MagicLinkToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  email     String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([email])
+}

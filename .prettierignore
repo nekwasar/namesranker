@@ -1,0 +1,12 @@
+.next/
+node_modules/
+coverage/
+playwright-report/
+test-results/
+src/generated/
+.env
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.vercel
+sentry-build/
