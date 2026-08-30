@@ -69,3 +69,38 @@ export function magicLinkEmail(to: string, url: string) {
     text: `Sign in to NamesRanker: ${url}\n\nThis link expires in 15 minutes and can only be used once.`,
   };
 }
+
+export function onboardingNudgeEmail(to: string, name: string, slug: string) {
+  const url = `https://${config.baseDomain}/onboarding`;
+  return {
+    to,
+    subject: `Finish your page — ${slug} is waiting`,
+    tags: ["onboarding-nudge"],
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+        <h2>You claimed <strong>/${slug}</strong> — now finish it.</h2>
+        <p>Hi ${name}, your name is searchable, but an empty page ranks for nothing. Add your bio, work, and links and we'll start ranking you for your name.</p>
+        <p><a href="${url}" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;">Finish my page</a></p>
+        <p style="color:#666;font-size:13px;">Someone else could claim a better variant of your name. Don't wait.</p>
+      </div>
+    `,
+    text: `Hi ${name}, you claimed /${slug} — now finish it. Add your bio, work, and links and we'll start ranking you for your name. Finish here: ${url}`,
+  };
+}
+
+export function claimConfirmationEmail(to: string, slug: string, url: string) {
+  return {
+    to,
+    subject: `You claimed ${slug} on NamesRanker`,
+    tags: ["claim-confirmation"],
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+        <h2>🎉 ${slug} is yours.</h2>
+        <p>You've claimed <strong>/${slug}</strong> — your name is now searchable. Your page will live at:</p>
+        <p><a href="${url}" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;">${url}</a></p>
+        <p style="color:#666;font-size:13px;">Finish your page and we'll start ranking it for your name. One-word claims stay exclusive while you're subscribed.</p>
+      </div>
+    `,
+    text: `${slug} is yours! You've claimed /${slug}. Your page will live at ${url}. Finish your page and we'll start ranking it for your name.`,
+  };
+}

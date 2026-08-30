@@ -38,23 +38,23 @@
 .socials {
   list-style: none;
   display: flex;
-  gap: 12px;
+  gap: 16px;
   flex-wrap: wrap;
+  padding-top: 20px;
+  border-top: 1px solid #e6e6eb;
   margin-top: 24px;
 }
 
 .socials a {
-  display: inline-block;
-  border: 1px solid #e6e6eb;
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-size: 0.9rem;
+  color: #4f6ef7;
   font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
   transition: border-color 0.15s ease;
 }
 
 .socials a:hover {
-  border-color: #4f6ef7;
+  border-bottom-color: #4f6ef7;
 }
 
 .testimonial {

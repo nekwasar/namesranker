@@ -24,6 +24,7 @@
     "cron:imports": "tsx scripts/cron/imports.ts",
     "cron:monitoring": "tsx scripts/cron/monitoring.ts",
     "cron:lapses": "tsx scripts/cron/lapses.ts",
+    "cron:nudges": "tsx scripts/cron/nudges.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

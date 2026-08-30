@@ -1,0 +1,98 @@
+.preview {
+  padding-top: 8px;
+}
+
+.header {
+  margin-bottom: 16px;
+}
+
+.photo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.descriptor {
+  color: #4f6ef7;
+  font-weight: 500;
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+}
+
+.path {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  color: #8a8a94;
+  margin: 6px 0 0;
+}
+
+.bio {
+  line-height: 1.5;
+  font-size: 0.9rem;
+  color: #3a3a44;
+  margin: 0 0 16px;
+}
+
+.section {
+  margin: 16px 0;
+  padding-top: 12px;
+  border-top: 1px solid #e6e6eb;
+}
+
+.section h4 {
+  font-size: 0.95rem;
+  margin: 0 0 8px;
+}
+
+.item {
+  margin: 8px 0;
+  font-size: 0.88rem;
+}
+
+.item h5 {
+  margin: 0 0 2px;
+  font-size: 0.92rem;
+}
+
+.item p {
+  margin: 2px 0;
+}
+
+.muted {
+  color: #8a8a94;
+  font-size: 0.8rem;
+}
+
+.quote {
+  margin: 10px 0;
+  padding-left: 12px;
+  border-left: 3px solid #4f6ef7;
+  font-size: 0.88rem;
+}
+
+.quote footer {
+  margin-top: 4px;
+}
+
+.socials {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 16px 0 0;
+  margin: 0;
+  border-top: 1px solid #e6e6eb;
+}
+
+.socials li {
+  font-size: 0.78rem;
+  color: #4f6ef7;
+  font-weight: 600;
+}

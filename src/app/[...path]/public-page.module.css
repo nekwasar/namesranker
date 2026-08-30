@@ -38,9 +38,9 @@
 
 .subNav {
   margin: 32px 0;
-  padding: 20px;
-  background: #f7f7f9;
-  border-radius: 12px;
+  padding: 20px 0;
+  border-top: 1px solid #e6e6eb;
+  border-bottom: 1px solid #e6e6eb;
 }
 
 .subNav h2 {

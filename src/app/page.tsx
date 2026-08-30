@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "./landing.module.css";
 import { getScarcity, getDemoProfiles } from "@/lib/landing";
+import { getRecentClaims } from "@/lib/claims/availability";
 
 export const revalidate = 60;
 
@@ -29,7 +30,11 @@ const organizationJsonLd = {
 };
 
 export default async function Home() {
-  const [scarcity, demoProfiles] = await Promise.all([getScarcity(), getDemoProfiles()]);
+  const [scarcity, demoProfiles, recentClaims] = await Promise.all([
+    getScarcity(),
+    getDemoProfiles(),
+    getRecentClaims(5),
+  ]);
 
   const availableCount = scarcity.filter((s) => s.status === "available").length;
 
@@ -83,6 +88,19 @@ export default async function Home() {
           <Link href="/onboarding" className={styles.scarcityCta}>
             Claim yours before someone else does →
           </Link>
+          {recentClaims.length > 0 ? (
+            <div className={styles.recent}>
+              <p className={styles.recentHeading}>Claimed recently</p>
+              <ul className={styles.recentList}>
+                {recentClaims.map((claim) => (
+                  <li key={claim.slug} className={styles.recentItem}>
+                    <span className={styles.recentSlug}>/{claim.slug}</span>
+                    <span className={styles.recentAgo}>{claim.ago}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </div>
       </section>
 

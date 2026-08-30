@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import { requireUser } from "@/lib/auth/require";
 import LogoutButton from "./logout-button";
+import MonitoringManager from "@/components/monitoring/monitoring-manager";
 
 export const metadata: Metadata = {
   title: "Settings — NamesRanker",
@@ -28,6 +29,9 @@ export default async function SettingsPage() {
           </li>
         </ul>
       </nav>
+      <section style={{ marginTop: 32 }}>
+        <MonitoringManager premium={user.plan === "PREMIUM"} />
+      </section>
     </main>
   );
 }

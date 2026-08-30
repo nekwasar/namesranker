@@ -30,6 +30,11 @@ export async function seedExpiredToken(email: string, rawToken: string): Promise
   );
 }
 
+export async function setUserPremium(email: string): Promise<void> {
+  const db = await getDb();
+  await db.query(`UPDATE "User" SET "plan" = 'PREMIUM' WHERE "email" = $1`, [email]);
+}
+
 export async function cleanup(emailPrefix: string): Promise<void> {
   const db = await getDb();
   await db.query(`DELETE FROM "MagicLinkToken" WHERE "email" ILIKE $1`, [`${emailPrefix}%`]);
