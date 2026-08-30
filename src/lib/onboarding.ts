@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/db";
 import { revalidatePublicPages } from "@/lib/revalidate";
 import { config } from "@/lib/config";
-import type { ClaimStatus, ContentBlockType, Prisma } from "@/generated/prisma/client";
+import { getHubPage, blockOfType, listOfType, replaceBlocks } from "@/lib/blocks";
+import type { ClaimStatus, Prisma } from "@/generated/prisma/client";
 
 /**
  * Onboarding wizard data layer (M5, spec §5.2, milestones §3.3).
@@ -141,40 +142,6 @@ async function ensureHubPage(userId: string, slug: string, name: string) {
     },
     select: { id: true, path: true, title: true },
   });
-}
-
-async function getHubPage(userId: string) {
-  return prisma.page.findFirst({
-    where: { ownerId: userId, isHub: true },
-    include: {
-      blocks: { orderBy: { order: "asc" } },
-      connectors: true,
-    },
-  });
-}
-
-function blockOfType(page: NonNullable<Awaited<ReturnType<typeof getHubPage>>>, type: string) {
-  return page.blocks.find((b) => b.type === type)?.payload as Prisma.JsonObject | undefined;
-}
-
-function listOfType(
-  page: NonNullable<Awaited<ReturnType<typeof getHubPage>>>,
-  type: string
-): Prisma.JsonObject[] {
-  return page.blocks.filter((b) => b.type === type).map((b) => b.payload as Prisma.JsonObject);
-}
-
-async function replaceBlocks(
-  pageId: string,
-  types: ContentBlockType[],
-  blocks: { type: ContentBlockType; payload: Prisma.InputJsonValue }[]
-) {
-  await prisma.contentBlock.deleteMany({ where: { pageId, type: { in: types } } });
-  if (blocks.length > 0) {
-    await prisma.contentBlock.createMany({
-      data: blocks.map((b, i) => ({ pageId, type: b.type, payload: b.payload, order: i })),
-    });
-  }
 }
 
 /** Persist one step's data. Idempotent: replaces that step's blocks each save. */

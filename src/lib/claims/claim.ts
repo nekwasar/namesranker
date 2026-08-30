@@ -31,11 +31,14 @@ export type ClaimErrorCode =
   | "one_word_premium"
   | "custom_slug_premium_required"
   | "invalid_custom_slug"
+  | "invalid_slug"
   | "invalid_keyword"
   | "keyword_required"
   | "no_slug_available"
   | "already_claimed"
   | "premium_required"
+  | "path_taken"
+  | "connector_limit"
   | "not_found";
 
 export class ClaimError extends Error {

@@ -1,0 +1,289 @@
+.manager {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 720px;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #e6e6eb;
+}
+
+.flash {
+  color: #157f3c;
+  font-size: 0.9rem;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e6e6eb;
+}
+
+.error {
+  color: #b42318;
+  font-size: 0.9rem;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #fecdca;
+}
+
+.pageTabs {
+  display: flex;
+  gap: 20px;
+  border-bottom: 1px solid #e6e6eb;
+}
+
+.pageTab {
+  background: none;
+  border: none;
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: #8a8a94;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.pageTab.active {
+  color: #4f6ef7;
+  font-weight: 600;
+  border-bottom-color: #4f6ef7;
+}
+
+.pagePath {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  color: #8a8a94;
+  margin: 0;
+}
+
+.section {
+  padding-top: 20px;
+  border-top: 1px solid #e6e6eb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section h2 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.hint {
+  color: #6b6b74;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.sectionBody {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.input,
+.textarea {
+  padding: 10px 12px;
+  border: 1px solid #d4d4dc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #fff;
+  font-family: inherit;
+  width: 100%;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: 2px solid #4f6ef7;
+  outline-offset: 1px;
+  border-color: transparent;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e6e6eb;
+}
+
+.entryHeader {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.reorder {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.reorderButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #4f6ef7;
+  padding: 4px 6px;
+}
+
+.reorderButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.primaryButton {
+  display: inline-block;
+  background: #4f6ef7;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+  width: fit-content;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ghostButton {
+  background: transparent;
+  color: #4f6ef7;
+  font-weight: 600;
+  padding: 8px 14px;
+  border: 1px solid #c7d0f9;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  width: fit-content;
+}
+
+.ghostLink {
+  color: #4f6ef7;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.dangerButton {
+  background: transparent;
+  color: #b42318;
+  font-weight: 600;
+  padding: 8px 14px;
+  border: 1px solid #fecdca;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  width: fit-content;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e6e6eb;
+  font-size: 0.9rem;
+}
+
+/* SERP preview */
+.serp {
+  border-top: 1px solid #e6e6eb;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.serpTitle {
+  color: #1a0dab;
+  font-size: 1.05rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.serpUrl {
+  color: #006621;
+  font-size: 0.8rem;
+  margin: 0;
+  word-break: break-all;
+}
+
+.serpDesc {
+  color: #545454;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scoreLabel {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.scoreValue {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #4f6ef7;
+}
+
+.scoreBar {
+  flex: 1;
+  height: 6px;
+  background: #f0f0f3;
+  border-radius: 999px;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.scoreFill {
+  height: 100%;
+  background: #4f6ef7;
+  border-radius: 999px;
+}
+
+.charCount {
+  color: #8a8a94;
+  font-weight: 400;
+  font-size: 0.8rem;
+}

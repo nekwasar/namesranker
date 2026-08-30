@@ -15,13 +15,16 @@ const bodySchema = z.object({
 const errorStatus: Record<string, number> = {
   invalid_name: 400,
   invalid_custom_slug: 400,
+  invalid_slug: 400,
   invalid_keyword: 400,
+  connector_limit: 400,
   one_word_premium: 403,
   custom_slug_premium_required: 403,
   premium_required: 403,
   already_claimed: 409,
   keyword_required: 409,
   no_slug_available: 409,
+  path_taken: 409,
   not_found: 404,
 };
 
