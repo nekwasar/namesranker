@@ -27,6 +27,15 @@ export const config = {
     priceLifetime: env("STRIPE_PRICE_LIFETIME"),
   },
   cronSecret: env("CRON_JOB_SECRET"),
+  /** Comma-separated emails given admin access to /admin (M9). */
+  adminEmails: env("ADMIN_EMAILS")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean),
+  imports: {
+    githubToken: env("GITHUB_TOKEN"),
+    youtubeApiKey: env("YOUTUBE_API_KEY"),
+  },
 } as const;
 
 export const magicLinkTokenTtlMs = 15 * 60 * 1000; // 15 minutes

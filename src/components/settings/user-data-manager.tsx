@@ -904,6 +904,8 @@ function ConnectorsSection({
 }) {
   const [type, setType] = useState<ConnectorType>("RSS");
   const [url, setUrl] = useState("");
+  const [syncingId, setSyncingId] = useState<string | null>(null);
+  const [syncStatus, setSyncStatus] = useState<Record<string, string | null>>({});
 
   async function add() {
     if (!url.trim()) return;
@@ -922,7 +924,7 @@ function ConnectorsSection({
       const data = (await res.json()) as { connector: SettingsPageData["connectors"][number] };
       onChanged([...page.connectors, data.connector]);
       setUrl("");
-      onFlash("Connector added — fetching imports arrives with import connectors (M7).");
+      onFlash("Connector added — sync it to pull content onto your page.");
     } finally {
       onBusy(null);
     }
@@ -943,12 +945,51 @@ function ConnectorsSection({
     }
   }
 
+  async function sync(id: string) {
+    setSyncingId(id);
+    setSyncStatus((prev) => ({ ...prev, [id]: null }));
+    try {
+      const res = await fetch(`/api/settings/connectors/${id}/sync`, { method: "POST" });
+      const data = (await res.json()) as {
+        ok: boolean;
+        result?: { imported: number; skippedDuplicates: number; error?: string };
+      };
+      if (!res.ok || !data.ok || !data.result) {
+        setSyncStatus((prev) => ({ ...prev, [id]: "Sync failed" }));
+        return;
+      }
+      const r = data.result;
+      setSyncStatus((prev) => ({
+        ...prev,
+        [id]: r.error
+          ? `Sync failed: ${r.error}`
+          : `Imported ${r.imported} new · ${r.skippedDuplicates} already on page`,
+      }));
+      onFlash("Connector synced — imported content is now on your page.");
+    } catch {
+      setSyncStatus((prev) => ({ ...prev, [id]: "Sync failed" }));
+    } finally {
+      setSyncingId(null);
+    }
+  }
+
+  function timeAgo(d: string | null): string {
+    if (!d) return "never";
+    const seconds = Math.max(0, Math.floor((Date.now() - new Date(d).getTime()) / 1000));
+    if (seconds < 60) return "just now";
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  }
+
   return (
     <section className={styles.section} data-testid="section-connectors">
       <h2>Import connectors</h2>
       <p className={styles.hint}>
         Pull your blog, GitHub, or YouTube onto the page. Free accounts sync manually; premium
-        auto-syncs. The fetch engine itself arrives with import connectors (M7).
+        auto-syncs.
       </p>
       {page.connectors.length === 0 ? (
         <p className={styles.hint}>No connectors yet.</p>
@@ -956,16 +997,34 @@ function ConnectorsSection({
         <ul className={styles.list} data-testid="connector-list">
           {page.connectors.map((c) => (
             <li key={c.id} className={styles.listItem} data-testid="connector-row">
-              <span>
-                <strong>{c.type}</strong> · {c.externalUrl}
-              </span>
-              <button
-                type="button"
-                className={styles.ghostButton}
-                onClick={() => void remove(c.id)}
-              >
-                Remove
-              </button>
+              <div className={styles.connectorInfo}>
+                <span>
+                  <strong>{c.type}</strong> · {c.externalUrl}
+                </span>
+                <span className={styles.hint} data-testid="connector-sync-status">
+                  Last synced{" "}
+                  {timeAgo(c.lastSyncedAt ? new Date(c.lastSyncedAt).toISOString() : null)}
+                  {syncStatus[c.id] ? ` · ${syncStatus[c.id]}` : ""}
+                </span>
+              </div>
+              <div className={styles.row}>
+                <button
+                  type="button"
+                  className={styles.ghostButton}
+                  data-testid="connector-sync"
+                  disabled={syncingId === c.id}
+                  onClick={() => void sync(c.id)}
+                >
+                  {syncingId === c.id ? "Syncing…" : "Sync now"}
+                </button>
+                <button
+                  type="button"
+                  className={styles.ghostButton}
+                  onClick={() => void remove(c.id)}
+                >
+                  Remove
+                </button>
+              </div>
             </li>
           ))}
         </ul>

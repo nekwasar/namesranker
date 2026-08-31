@@ -220,6 +220,17 @@
   font-size: 0.9rem;
 }
 
+.connectorInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.connectorInfo .hint {
+  font-size: 0.8rem;
+}
+
 /* SERP preview */
 .serp {
   border-top: 1px solid #e6e6eb;
