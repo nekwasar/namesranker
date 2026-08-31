@@ -5,6 +5,7 @@ import { requireUser } from "@/lib/auth/require";
 import LogoutButton from "./logout-button";
 import ManageBilling from "./manage-billing";
 import MonitoringManager from "@/components/monitoring/monitoring-manager";
+import SearchConsoleManager from "@/components/gsc/search-console-manager";
 
 export const metadata: Metadata = {
   title: "Settings — NamesRanker",
@@ -17,6 +18,26 @@ export default async function SettingsPage() {
     where: { id: user.sub },
     select: { isAdmin: true },
   });
+
+  const [gscPages, searchConsole] = await Promise.all([
+    prisma.page.findMany({
+      where: { ownerId: user.sub },
+      select: { id: true, path: true, title: true },
+    }),
+    prisma.searchConsoleLink.findMany({
+      where: { page: { ownerId: user.sub } },
+      include: { page: { select: { path: true, title: true } } },
+      orderBy: { createdAt: "desc" },
+    }),
+  ]);
+  const gscLinks = searchConsole.map((l) => ({
+    id: l.id,
+    pageId: l.pageId,
+    pagePath: l.page.path,
+    pageTitle: l.page.title,
+    propertyUrl: l.propertyUrl,
+    lastImportAt: l.lastImportAt ? l.lastImportAt.toISOString() : null,
+  }));
 
   return (
     <main>
@@ -49,6 +70,13 @@ export default async function SettingsPage() {
       </section>
       <section style={{ marginTop: 32 }}>
         <MonitoringManager premium={user.plan === "PREMIUM"} />
+      </section>
+      <section style={{ marginTop: 32 }}>
+        <SearchConsoleManager
+          premium={user.plan === "PREMIUM"}
+          initialLinks={gscLinks}
+          pages={gscPages}
+        />
       </section>
     </main>
   );

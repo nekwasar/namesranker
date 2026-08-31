@@ -36,6 +36,10 @@ export const config = {
     githubToken: env("GITHUB_TOKEN"),
     youtubeApiKey: env("YOUTUBE_API_KEY"),
   },
+  google: {
+    searchConsoleClientId: env("GOOGLE_SEARCH_CONSOLE_CLIENT_ID"),
+    searchConsoleClientSecret: env("GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET"),
+  },
 } as const;
 
 export const magicLinkTokenTtlMs = 15 * 60 * 1000; // 15 minutes

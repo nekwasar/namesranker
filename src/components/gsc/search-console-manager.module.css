@@ -1,0 +1,158 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 720px;
+  padding-top: 16px;
+  border-top: 1px solid #e6e6eb;
+}
+
+.wrapper h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.hint {
+  color: #6b6b74;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.error {
+  color: #b42318;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.select {
+  padding: 10px 12px;
+  border: 1px solid #d4d4dc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  min-width: 220px;
+  background: #fff;
+}
+
+.primaryButton {
+  display: inline-block;
+  background: #000;
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.primaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dangerButton {
+  background: transparent;
+  color: #b42318;
+  border: 1px solid #d4d4dc;
+  font-weight: 600;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.dangerButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  padding: 14px 0;
+  border-bottom: 1px solid #e6e6eb;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.itemMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.muted {
+  color: #6b6b74;
+  font-size: 0.85rem;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.panel {
+  border: 1px solid #e6e6eb;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.totals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.total {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.total strong {
+  font-size: 1.4rem;
+}
+
+.total span {
+  color: #6b6b74;
+  font-size: 0.8rem;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.table th,
+.table td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid #e6e6eb;
+}
+
+.table th {
+  color: #6b6b74;
+  font-weight: 600;
+}

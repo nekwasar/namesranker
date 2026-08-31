@@ -114,6 +114,7 @@ model Page {
   blocks     ContentBlock[]
   connectors ImportConnector[]
   showcase   ShowcaseEntry?
+  searchConsole SearchConsoleLink?
 
   @@index([ownerId])
   @@index([status])
@@ -190,6 +191,8 @@ model SearchConsoleLink {
   oauthRefreshToken String
   lastImportAt      DateTime?
   createdAt         DateTime @default(now())
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
   @@index([pageId])
 }
