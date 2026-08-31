@@ -1,13 +1,15 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Monochrome brand system — off-white page, black ink, nothing else. */
+  --background: #f7f6f2; /* standard off-white */
+  --surface: #ffffff; /* elevated panels (hero demo, cards) */
+  --foreground: #0a0a0a; /* near-black ink */
+  --muted: #6c6b66; /* secondary text, greys */
+  --faint: #9c9b95; /* tertiary, hairlines */
+  --hairline: #e6e4de; /* dividers */
+  --hairline-strong: #cfcdc5;
+  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light;
 }
 
 html,
@@ -19,7 +21,7 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -35,8 +37,15 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+::selection {
+  background: var(--foreground);
+  color: var(--surface);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }
