@@ -3,8 +3,31 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session";
 
 const PROTECTED_PREFIXES = ["/settings", "/onboarding", "/admin"];
 
+const BASE_HOSTS = new Set(["namesranker.com", "ra-nk.me", "ra-nk.co", "localhost", "127.0.0.1"]);
+
+/**
+ * 1) Custom-domain rewrite (spec §3.5): requests whose Host isn't the base
+ *    domain are sent to `/cdom/{host}/{path}` where the dynamic route resolves
+ *    the host to its verified page (404 if unverified/unknown).
+ * 2) Auth guard for protected prefixes on the base domain.
+ */
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
+
+  // Trust x-forwarded-host (proxies/Vercel) over the raw Host header.
+  const hostHeader =
+    req.headers.get("x-forwarded-host")?.toLowerCase() ??
+    req.headers.get("host")?.toLowerCase() ??
+    "";
+  const host = hostHeader.split(":")[0];
+
+  const isBaseHost = !host || BASE_HOSTS.has(host) || host.endsWith(".namesranker.com");
+
+  if (!isBaseHost) {
+    const url = req.nextUrl.clone();
+    url.pathname = `/cdom/${host}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.rewrite(url);
+  }
 
   const needsAuth = PROTECTED_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
@@ -25,5 +48,7 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/settings/:path*", "/onboarding/:path*", "/admin/:path*"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };

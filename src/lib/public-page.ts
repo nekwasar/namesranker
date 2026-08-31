@@ -98,6 +98,16 @@ export function pageUrl(path: string): string {
   return `https://${config.baseDomain}/${path}`;
 }
 
+/**
+ * Host-aware URL: serve under a verified custom domain when the request host
+ * matches one, otherwise fall back to the canonical base domain (spec §3.5).
+ */
+export function pageUrlForHost(path: string, host: string | null | undefined): string {
+  const hostname = host?.split(":")[0]?.toLowerCase() ?? "";
+  const domain = hostname && hostname !== config.baseDomain ? hostname : config.baseDomain;
+  return `https://${domain}/${path}`;
+}
+
 export function pageUrlPath(path: string): string {
   return `/${path}`;
 }

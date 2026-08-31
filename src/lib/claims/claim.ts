@@ -39,7 +39,11 @@ export type ClaimErrorCode =
   | "premium_required"
   | "path_taken"
   | "connector_limit"
-  | "not_found";
+  | "not_found"
+  | "invalid_domain"
+  | "reserved_domain"
+  | "domain_taken"
+  | "verification_failed";
 
 export class ClaimError extends Error {
   constructor(

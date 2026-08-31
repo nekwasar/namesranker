@@ -607,6 +607,17 @@ export default function UserDataManager({
         />
       </Section>
 
+      {/* Custom domain */}
+      <CustomDomainSection
+        premium={premium}
+        page={page}
+        busy={busy}
+        onBusy={setBusy}
+        onFlash={setFlash}
+        onError={setFlashError}
+        onChanged={(cd) => updatePages((p) => ({ ...p, ...cd }))}
+      />
+
       {/* SEO editor */}
       <SeoEditor
         page={page}
@@ -1179,6 +1190,196 @@ function SubPagesSection({
             Live at /{hub?.path ?? "your-name"}/{"<segment>"} once created.
           </p>
         </>
+      )}
+    </section>
+  );
+}
+
+function CustomDomainSection({
+  premium,
+  page,
+  busy,
+  onBusy,
+  onFlash,
+  onError,
+  onChanged,
+}: {
+  premium: boolean;
+  page: SettingsPageData;
+  busy: string | null;
+  onBusy: (v: string | null) => void;
+  onFlash: (msg: string) => void;
+  onError: (msg: string) => void;
+  onChanged: (patch: Partial<SettingsPageData>) => void;
+}) {
+  const [domain, setDomain] = useState("");
+  const [verifying, setVerifying] = useState(false);
+
+  async function save() {
+    if (!domain.trim()) return;
+    onBusy("custom-domain");
+    onError("");
+    try {
+      const res = await fetch("/api/settings/custom-domain", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pageId: page.id, domain: domain.trim() }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        domain?: string;
+        token?: string;
+        txtName?: string;
+      };
+      if (!res.ok || !data.ok) {
+        onError(
+          data.error === "reserved_domain"
+            ? "That domain belongs to NamesRanker."
+            : data.error === "domain_taken"
+              ? "That domain is already attached to another page."
+              : data.error === "premium_required"
+                ? "Custom domains are a premium feature."
+                : "Enter a valid domain, e.g. yourname.com"
+        );
+        return;
+      }
+      onChanged({
+        customDomain: data.domain ?? null,
+        customDomainToken: data.token ?? null,
+        customDomainVerified: false,
+      });
+      setDomain("");
+      onFlash("Custom domain saved — add the TXT record below, then click Verify.");
+    } finally {
+      onBusy(null);
+    }
+  }
+
+  async function verify() {
+    setVerifying(true);
+    onError("");
+    try {
+      const res = await fetch("/api/settings/custom-domain/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pageId: page.id }),
+      });
+      const data = (await res.json()) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) {
+        onError("Verification failed — make sure the TXT record is published, then try again.");
+        return;
+      }
+      onChanged({ customDomainVerified: true });
+      onFlash("Domain verified — your page now lives at your custom domain.");
+    } finally {
+      setVerifying(false);
+    }
+  }
+
+  async function remove() {
+    onBusy("custom-domain");
+    onError("");
+    try {
+      const res = await fetch(`/api/settings/custom-domain?pageId=${page.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        onError("Couldn't remove the custom domain.");
+        return;
+      }
+      onChanged({
+        customDomain: null,
+        customDomainToken: null,
+        customDomainVerified: false,
+      });
+      onFlash("Custom domain removed.");
+    } finally {
+      onBusy(null);
+    }
+  }
+
+  return (
+    <section className={styles.section} data-testid="section-custom-domain">
+      <h2>Custom domain</h2>
+      <p className={styles.hint}>
+        Serve this page from your own domain (e.g. yourname.com). Premium feature — verified by DNS
+        TXT record.
+      </p>
+
+      {!premium ? (
+        <div data-testid="custom-domain-upsell">
+          <p className={styles.hint}>Custom domains are premium — upgrade to attach your own.</p>
+          <Link href="/pricing" className={styles.primaryButton}>
+            Go Premium
+          </Link>
+        </div>
+      ) : page.customDomain ? (
+        <div className={styles.entry} data-testid="custom-domain-active">
+          <p className={styles.pagePath}>https://{page.customDomain}/</p>
+          {page.customDomainVerified ? (
+            <p className={styles.hint} data-testid="custom-domain-verified">
+              ✓ Verified — this page is live at your domain.
+            </p>
+          ) : (
+            <>
+              <p className={styles.hint}>Add this TXT record to verify ownership:</p>
+              <p className={styles.code} data-testid="custom-domain-txt">
+                {page.customDomainToken ? `_namesranker.${page.customDomain}` : ""} →{" "}
+                {page.customDomainToken ?? ""}
+              </p>
+              <button
+                type="button"
+                className={styles.primaryButton}
+                disabled={verifying || busy === "custom-domain"}
+                onClick={() => void verify()}
+                data-testid="custom-domain-verify"
+              >
+                {verifying ? "Checking…" : "Verify now"}
+              </button>
+            </>
+          )}
+          <div className={styles.row}>
+            <a
+              className={styles.ghostLink}
+              href={`https://${page.customDomain}/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="custom-domain-visit"
+            >
+              Visit domain →
+            </a>
+            <button
+              type="button"
+              className={styles.dangerButton}
+              disabled={busy === "custom-domain"}
+              onClick={() => void remove()}
+              data-testid="custom-domain-remove"
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className={styles.row} data-testid="custom-domain-form">
+          <input
+            className={styles.input}
+            type="text"
+            value={domain}
+            placeholder="yourname.com"
+            onChange={(e) => setDomain(e.target.value)}
+            data-testid="custom-domain-input"
+          />
+          <button
+            type="button"
+            className={styles.primaryButton}
+            disabled={busy === "custom-domain" || !domain.trim()}
+            onClick={() => void save()}
+            data-testid="custom-domain-save"
+          >
+            Save domain
+          </button>
+        </div>
       )}
     </section>
   );

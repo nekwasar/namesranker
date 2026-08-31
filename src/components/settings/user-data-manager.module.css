@@ -58,6 +58,17 @@
   margin: 0;
 }
 
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  background: #f7f7f9;
+  border: 1px solid #e6e6eb;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 0;
+  word-break: break-all;
+}
+
 .section {
   padding-top: 20px;
   border-top: 1px solid #e6e6eb;

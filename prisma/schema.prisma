@@ -106,6 +106,8 @@ model Page {
   status          PageStatus @default(DRAFT)
   seoScore        Int?
   customDomain    String?    @unique
+  customDomainToken String?
+  customDomainVerifiedAt DateTime?
   publishedAt     DateTime?
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt

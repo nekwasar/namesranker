@@ -34,6 +34,9 @@ export interface SettingsPageData {
   metaTitle: string | null;
   metaDescription: string | null;
   seoScore: number;
+  customDomain: string | null;
+  customDomainToken: string | null;
+  customDomainVerified: boolean;
   content: {
     photoUrl: string | null;
     bio: string | null;
@@ -85,6 +88,9 @@ function toSettingsPage(
     metaTitle: page.metaTitle,
     metaDescription: page.metaDescription,
     seoScore,
+    customDomain: page.customDomain,
+    customDomainToken: page.customDomainToken,
+    customDomainVerified: page.customDomainVerifiedAt !== null,
     content,
     connectors: page.connectors.map((c) => ({
       id: c.id,
