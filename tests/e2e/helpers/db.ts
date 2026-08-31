@@ -35,6 +35,11 @@ export async function setUserPremium(email: string): Promise<void> {
   await db.query(`UPDATE "User" SET "plan" = 'PREMIUM' WHERE "email" = $1`, [email]);
 }
 
+export async function setUserAdmin(email: string): Promise<void> {
+  const db = await getDb();
+  await db.query(`UPDATE "User" SET "isAdmin" = true WHERE "email" = $1`, [email]);
+}
+
 export async function cleanup(emailPrefix: string): Promise<void> {
   const db = await getDb();
   await db.query(`DELETE FROM "MagicLinkToken" WHERE "email" ILIKE $1`, [`${emailPrefix}%`]);

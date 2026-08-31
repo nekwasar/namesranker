@@ -68,6 +68,7 @@ model User {
   onboardedAt          DateTime?
   onboardingStep       Int?
   profilePhotoUrl      String?
+  isAdmin              Boolean   @default(false)
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 

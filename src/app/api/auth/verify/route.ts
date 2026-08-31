@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { config } from "@/lib/config";
 import { hashToken, isTokenExpired } from "@/lib/auth/magic-link";
 import { setSessionCookie } from "@/lib/auth/session";
 import { safeRedirectUrl } from "@/lib/auth/redirect";
@@ -43,10 +44,11 @@ export async function GET(req: NextRequest) {
     data: { usedAt: new Date() },
   });
 
+  const isAdmin = config.adminEmails.includes(record.email.toLowerCase());
   const user = await prisma.user.upsert({
     where: { email: record.email },
     update: {},
-    create: { email: record.email },
+    create: { email: record.email, isAdmin },
   });
 
   await setSessionCookie({
