@@ -3,6 +3,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { requireUser } from "@/lib/auth/require";
 import LogoutButton from "./logout-button";
+import ManageBilling from "./manage-billing";
 import MonitoringManager from "@/components/monitoring/monitoring-manager";
 
 export const metadata: Metadata = {
@@ -39,6 +40,13 @@ export default async function SettingsPage() {
           </li>
         </ul>
       </nav>
+      <section style={{ marginTop: 32 }}>
+        <h2>Plan</h2>
+        <p>
+          {user.plan === "PREMIUM" ? "You're on Premium." : "You're on the free plan."}{" "}
+          {user.plan !== "PREMIUM" ? <Link href="/pricing">Upgrade</Link> : <ManageBilling />}
+        </p>
+      </section>
       <section style={{ marginTop: 32 }}>
         <MonitoringManager premium={user.plan === "PREMIUM"} />
       </section>
