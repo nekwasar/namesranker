@@ -104,3 +104,22 @@ export function claimConfirmationEmail(to: string, slug: string, url: string) {
     text: `${slug} is yours! You've claimed /${slug}. Your page will live at ${url}. Finish your page and we'll start ranking it for your name.`,
   };
 }
+
+export function monitoringAlertEmail(to: string, watchedName: string, slugs: string[]) {
+  const url = `https://${config.baseDomain}/settings`;
+  const slugList = slugs.map((s) => `/${s}`).join(", ");
+  return {
+    to,
+    subject: `⚠️ Someone claimed a name you're watching: ${watchedName}`,
+    tags: ["monitoring-alert"],
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+        <h2>A slug matching “${watchedName}” was claimed</h2>
+        <p>${slugList} ${slugs.length > 1 ? "were" : "was"} just claimed on NamesRanker.</p>
+        <p>If this is you, great — otherwise you may want to secure the best variant before someone else does.</p>
+        <p><a href="${url}" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;">Manage your monitoring</a></p>
+      </div>
+    `,
+    text: `A slug matching "${watchedName}" was claimed: ${slugList}. Manage your monitoring at ${url}.`,
+  };
+}
