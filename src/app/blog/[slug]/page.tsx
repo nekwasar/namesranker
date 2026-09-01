@@ -3,10 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import NavBar from "@/components/site/nav";
 import Footer from "@/components/site/footer";
-import { blogAuthors, blogPosts, formatBlogDate, getBlogPost } from "@/lib/blog";
+import { blogPosts, formatBlogDate, getBlogAuthorByName, getBlogPost } from "@/lib/blog";
+import { config } from "@/lib/config";
 import styles from "./post.module.css";
 
 export const dynamicParams = false;
+
+const base = `https://${config.baseDomain}`;
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
@@ -15,9 +18,29 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const post = getBlogPost(params.slug);
   if (!post) return {};
+  const url = `${base}/blog/${post.slug}`;
+  const publishedTime = new Date(`${post.date}T00:00:00Z`).toISOString();
   return {
     title: `${post.title} — NamesRanker Blog`,
     description: post.excerpt,
+    alternates: { canonical: url },
+    authors: post.authors.map((author) => {
+      const profile = getBlogAuthorByName(author.name);
+      return profile
+        ? { name: author.name, url: `${base}/blog/authors/${profile.slug}` }
+        : { name: author.name };
+    }),
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: "article",
+      url,
+      siteName: "NamesRanker",
+      publishedTime,
+      modifiedTime: publishedTime,
+      authors: post.authors.map((a) => a.name),
+      tags: [post.category],
+    },
   };
 }
 
@@ -25,9 +48,33 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
   const post = getBlogPost(params.slug);
   if (!post) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    url: `${base}/blog/${post.slug}`,
+    mainEntityOfPage: `${base}/blog/${post.slug}`,
+    author: post.authors.map((author) => {
+      const profile = getBlogAuthorByName(author.name);
+      return {
+        "@type": "Person",
+        name: author.name,
+        ...(author.role ? { jobTitle: author.role } : {}),
+        ...(profile ? { url: `${base}/blog/authors/${profile.slug}` } : {}),
+      };
+    }),
+  };
+
   return (
     <main>
       <NavBar />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <article className={styles.page}>
         <Link href="/blog" className={styles.back}>
           ← Blog
@@ -56,7 +103,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             <div className={styles.authors}>
               <span className={styles.authorName}>
                 {post.authors.map((author, i) => {
-                  const profile = blogAuthors.find((a) => a.name === author.name);
+                  const profile = getBlogAuthorByName(author.name);
                   const separator = i > 0 ? ", " : "";
                   return profile ? (
                     <span key={author.name}>

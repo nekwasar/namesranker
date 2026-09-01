@@ -7,6 +7,7 @@ import {
   filterPosts,
   formatBlogDate,
   getBlogAuthor,
+  getBlogAuthorByName,
   getBlogPost,
   postsByAuthor,
 } from "@/lib/blog";
@@ -44,6 +45,29 @@ describe("blog post data", () => {
   it("getBlogPost resolves by slug and misses unknown slugs", () => {
     expect(getBlogPost(blogPosts[0].slug)?.title).toBe(blogPosts[0].title);
     expect(getBlogPost("does-not-exist")).toBeUndefined();
+  });
+
+  it("every post is a full article with headings, lists, and a substantial body", () => {
+    for (const post of blogPosts) {
+      expect(post.full, post.slug).toBe(true);
+      const headings = post.body.filter((b) => typeof b === "object" && "h" in b);
+      const lists = post.body.filter((b) => typeof b === "object" && "ul" in b);
+      expect(post.body.length, post.slug).toBeGreaterThanOrEqual(8);
+      expect(headings.length, post.slug).toBeGreaterThanOrEqual(3);
+      expect(lists.length, post.slug).toBeGreaterThanOrEqual(1);
+    }
+  });
+
+  it("getBlogAuthorByName resolves bylines to profiles", () => {
+    expect(getBlogAuthorByName("Priya Anand")?.slug).toBe("priya-anand");
+    expect(getBlogAuthorByName("Nobody Real")).toBeUndefined();
+    // Every post byline resolves to a profile where one exists.
+    for (const post of blogPosts) {
+      for (const author of post.authors) {
+        const profile = getBlogAuthorByName(author.name);
+        if (profile) expect(profile.name).toBe(author.name);
+      }
+    }
   });
 
   it("has exactly one featured post, and it is a full article", () => {

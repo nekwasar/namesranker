@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import NavBar from "@/components/site/nav";
 import Footer from "@/components/site/footer";
 import { blogAuthors, formatBlogDate, getBlogAuthor, postsByAuthor } from "@/lib/blog";
+import { config } from "@/lib/config";
 import styles from "./author.module.css";
+
+const base = `https://${config.baseDomain}`;
 
 export const dynamicParams = false;
 
@@ -15,9 +18,18 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const author = getBlogAuthor(params.slug);
   if (!author) return {};
+  const url = `${base}/blog/authors/${author.slug}`;
   return {
     title: `${author.name} — NamesRanker Blog`,
     description: author.bio,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${author.name} — NamesRanker Blog`,
+      description: author.bio,
+      type: "profile",
+      url,
+      siteName: "NamesRanker",
+    },
   };
 }
 
@@ -27,9 +39,25 @@ export default function AuthorPage({ params }: { params: { slug: string } }) {
 
   const posts = postsByAuthor(author);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    mainEntity: {
+      "@type": "Person",
+      name: author.name,
+      ...(author.role ? { jobTitle: author.role } : {}),
+      description: author.bio,
+      ...(author.avatarUrl ? { image: author.avatarUrl } : {}),
+    },
+  };
+
   return (
     <main>
       <NavBar />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <article className={styles.page}>
         <Link href="/blog/authors" className={styles.back}>
           ← All authors

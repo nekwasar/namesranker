@@ -6,6 +6,8 @@ interface SendEmailParams {
   html: string;
   text: string;
   tags?: string[];
+  /** Reply-to address (e.g. the visitor's email on the contact form). */
+  replyTo?: string;
 }
 
 /**
@@ -19,6 +21,7 @@ export async function sendEmail({
   html,
   text,
   tags = [],
+  replyTo,
 }: SendEmailParams): Promise<void> {
   const apiKey = config.brevo.apiKey;
   if (!apiKey) {
@@ -44,6 +47,7 @@ export async function sendEmail({
       htmlContent: html,
       textContent: text,
       tags,
+      ...(replyTo ? { replyTo: { email: replyTo } } : {}),
     }),
   });
 
@@ -102,6 +106,24 @@ export function claimConfirmationEmail(to: string, slug: string, url: string) {
       </div>
     `,
     text: `${slug} is yours! You've claimed /${slug}. Your page will live at ${url}. Finish your page and we'll start ranking it for your name.`,
+  };
+}
+
+export function contactFormEmail(name: string, email: string, subject: string, message: string) {
+  const to = config.contact.email;
+  return {
+    to,
+    subject: `[Contact] ${subject}`,
+    tags: ["contact-form"],
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+        <h2>New contact form message</h2>
+        <p><strong>From:</strong> ${name} &lt;${email}&gt;</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p style="border-left:3px solid #111;padding-left:12px;white-space:pre-wrap;">${message}</p>
+      </div>
+    `,
+    text: `New contact form message\n\nFrom: ${name} <${email}>\nSubject: ${subject}\n\n${message}`,
   };
 }
 

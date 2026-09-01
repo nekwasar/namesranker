@@ -18,6 +18,8 @@ const columns: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/blog/authors", label: "Authors" },
       { href: "/usecases", label: "Use cases" },
       { href: "/faq", label: "FAQ" },
+      { href: "/changelog", label: "Changelog" },
+      { href: "/contact", label: "Contact" },
     ],
   },
   {

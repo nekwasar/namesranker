@@ -26,6 +26,9 @@ export const config = {
     priceAnnual: env("STRIPE_PRICE_ANNUAL"),
     priceLifetime: env("STRIPE_PRICE_LIFETIME"),
   },
+  contact: {
+    email: env("CONTACT_EMAIL", "hello@namesranker.com"),
+  },
   cronSecret: env("CRON_JOB_SECRET"),
   /** Comma-separated emails given admin access to /admin (M9). */
   adminEmails: env("ADMIN_EMAILS")

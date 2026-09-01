@@ -62,6 +62,64 @@ test("unknown search shows the empty state", async ({ page }) => {
   await expect(page.getByTestId("blog-empty")).toBeVisible();
 });
 
+test("every post renders as a full article with no preview sign-off", async ({ page }) => {
+  const slugs = [
+    "end-of-duplicate-name-chaos",
+    "custom-domains-ga",
+    "sleep-easy-name-monitoring",
+    "bring-your-own-content",
+    "simple-billing-no-lock-in",
+  ];
+  for (const slug of slugs) {
+    await page.goto(`/blog/${slug}`);
+    // Full articles have at least one sub-heading and a list.
+    await expect(page.locator("h2").first(), slug).toBeVisible();
+    await expect(page.locator("ul").first(), slug).toBeVisible();
+    await expect(page.getByText(/this is a preview/), slug).toHaveCount(0);
+  }
+});
+
+test("full article appears in the grid and renders without preview sign-off", async ({ page }) => {
+  await page.goto("/blog");
+  await page.getByTestId("blog-search").fill("subdomain");
+  const cards = page.getByTestId("blog-grid").locator("a");
+  await expect(cards).toHaveCount(1);
+  await expect(cards.first()).toContainText(/Subdomains are quietly killing/);
+  await cards.first().click();
+  await page.waitForURL("**/blog/subdomains-are-killing-your-rankings");
+  await expect(page.getByRole("heading", { name: /Subdomains are quietly killing/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /different website/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /authority math/ })).toBeVisible();
+  await expect(page.getByText(/this is a preview/)).toHaveCount(0);
+});
+
+test("post page emits BlogPosting JSON-LD with author Person markup", async ({ page }) => {
+  await page.goto("/blog/subdomains-are-killing-your-rankings");
+  const ld = page.locator('script[type="application/ld+json"]');
+  await expect(ld).toHaveCount(1);
+  const json = JSON.parse((await ld.first().textContent()) ?? "{}");
+  expect(json["@type"]).toBe("BlogPosting");
+  expect(json.headline).toContain("Subdomains");
+  expect(Array.isArray(json.author)).toBe(true);
+  expect(json.author.some((a: { "@type": string; name: string }) => a["@type"] === "Person")).toBe(
+    true
+  );
+  const mara = json.author.find((a: { name: string }) => a.name === "Mara Voss");
+  expect(mara).toBeDefined();
+  expect(mara.url).toContain("/blog/authors/mara-voss");
+});
+
+test("author profile emits ProfilePage JSON-LD with Person mainEntity", async ({ page }) => {
+  await page.goto("/blog/authors/mara-voss");
+  const ld = page.locator('script[type="application/ld+json"]');
+  await expect(ld).toHaveCount(1);
+  const json = JSON.parse((await ld.first().textContent()) ?? "{}");
+  expect(json["@type"]).toBe("ProfilePage");
+  expect(json.mainEntity["@type"]).toBe("Person");
+  expect(json.mainEntity.name).toBe("Mara Voss");
+  expect(json.mainEntity.jobTitle).toBe("Engineering Lead");
+});
+
 test("RSS feed is served", async ({ page }) => {
   const res = await page.request.get("/blog/feed.xml");
   expect(res.status()).toBe(200);
