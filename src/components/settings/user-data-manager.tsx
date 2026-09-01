@@ -13,6 +13,7 @@ import {
   SEO_TITLE_IDEAL_MAX,
   SEO_TITLE_IDEAL_MIN,
 } from "@/lib/seo";
+import PhotoUploader from "@/components/upload/photo-uploader";
 import styles from "./user-data-manager.module.css";
 
 export default function UserDataManager({
@@ -163,17 +164,11 @@ export default function UserDataManager({
           onChange={(e) => updatePages((p) => ({ ...p, descriptor: e.target.value }))}
           placeholder="Product Designer · Austin, TX"
         />
-        <label className={styles.label} htmlFor="settings-photo">
-          Profile photo URL
-        </label>
-        <input
-          id="settings-photo"
-          data-testid="settings-photo"
-          className={styles.input}
-          type="url"
+        <label className={styles.label}>Profile photo</label>
+        <PhotoUploader
           value={page.content.photoUrl ?? ""}
-          onChange={(e) => patchContent({ photoUrl: e.target.value })}
-          placeholder="https://…"
+          onChange={(url) => patchContent({ photoUrl: url })}
+          testid="settings-photo"
         />
         <label className={styles.label} htmlFor="settings-bio">
           Bio

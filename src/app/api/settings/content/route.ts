@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
 import { saveContent, ContentSection } from "@/lib/settings";
+import { photoUrlField } from "@/lib/uploads";
 import { ClaimError } from "@/lib/claims/claim";
 
 export const runtime = "nodejs";
@@ -37,7 +38,7 @@ const testimonialSchema = z.object({
 const sectionSchemas: Record<ContentSection, z.ZodTypeAny> = {
   profile: z.object({
     descriptor: z.string().max(200).optional().nullable(),
-    photoUrl: z.string().url().or(z.literal("")).optional().nullable(),
+    photoUrl: photoUrlField,
     bio: z.string().max(2000).optional().nullable(),
   }),
   socials: z.object({ links: z.array(socialLinkSchema).max(20) }),

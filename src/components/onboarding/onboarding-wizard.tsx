@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ConnectorItem, PreviewData } from "@/lib/onboarding";
 import PagePreview from "./page-preview";
+import PhotoUploader from "@/components/upload/photo-uploader";
 import styles from "./onboarding-wizard.module.css";
 
 const STEP_LABELS = ["Name", "Profile", "Links", "Work", "Credibility", "Imports", "Launch"];
@@ -180,17 +181,11 @@ function StepForm({
           placeholder="Product Designer · Austin, TX"
           onChange={(e) => patch({ descriptor: e.target.value })}
         />
-        <label className={styles.label} htmlFor="photo-url">
-          Profile photo URL
-        </label>
-        <input
-          id="photo-url"
-          data-testid="photo-url"
-          className={styles.input}
-          type="url"
+        <label className={styles.label}>Profile photo</label>
+        <PhotoUploader
           value={draft.photoUrl ?? ""}
-          placeholder="https://…"
-          onChange={(e) => patch({ photoUrl: e.target.value })}
+          onChange={(url) => patch({ photoUrl: url })}
+          testid="photo"
         />
         <label className={styles.label} htmlFor="bio-input">
           Short bio

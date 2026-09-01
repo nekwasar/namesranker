@@ -40,6 +40,14 @@ export const config = {
     searchConsoleClientId: env("GOOGLE_SEARCH_CONSOLE_CLIENT_ID"),
     searchConsoleClientSecret: env("GOOGLE_SEARCH_CONSOLE_CLIENT_SECRET"),
   },
+  uploads: {
+    /** Directory (relative to project root) where uploaded files are stored. */
+    dir: env("UPLOAD_DIR", "uploads"),
+    /** Public URL prefix for uploaded files (served by /api/files/[...]). */
+    urlPrefix: env("UPLOAD_URL_PREFIX", "/api/files"),
+    /** Max image size accepted (5 MB). */
+    maxBytes: 5 * 1024 * 1024,
+  },
 } as const;
 
 export const magicLinkTokenTtlMs = 15 * 60 * 1000; // 15 minutes

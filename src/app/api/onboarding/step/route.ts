@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getSession } from "@/lib/auth/session";
 import { saveStep } from "@/lib/onboarding";
+import { photoUrlField } from "@/lib/uploads";
 
 export const runtime = "nodejs";
 
@@ -40,7 +41,7 @@ const connectorSchema = z.object({
 const stepSchemas: Record<number, z.ZodTypeAny> = {
   2: z.object({
     descriptor: z.string().max(200).optional().nullable(),
-    photoUrl: z.string().url().or(z.literal("")).optional().nullable(),
+    photoUrl: photoUrlField,
     bio: z.string().max(2000).optional().nullable(),
   }),
   3: z.object({ links: z.array(socialLinkSchema).max(20) }),
