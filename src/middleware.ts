@@ -5,6 +5,12 @@ const PROTECTED_PREFIXES = ["/settings", "/onboarding", "/admin"];
 
 const BASE_HOSTS = new Set(["namesranker.com", "ra-nk.me", "ra-nk.co", "localhost", "127.0.0.1"]);
 
+/** A bare IP literal (IPv4, or IPv6 containing colons) is a direct host, never a custom domain. */
+function isIpAddress(host: string): boolean {
+  if (host.includes(":")) return true; // IPv6
+  return /^(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}$/.test(host);
+}
+
 /**
  * 1) Custom-domain rewrite (spec §3.5): requests whose Host isn't the base
  *    domain are sent to `/cdom/{host}/{path}` where the dynamic route resolves
@@ -19,9 +25,11 @@ export async function middleware(req: NextRequest) {
     req.headers.get("x-forwarded-host")?.toLowerCase() ??
     req.headers.get("host")?.toLowerCase() ??
     "";
-  const host = hostHeader.split(":")[0];
+  // Strip a single :port suffix, but keep IPv6 literals (which contain colons) whole.
+  const host = (hostHeader.match(/:/g) ?? []).length <= 1 ? hostHeader.split(":")[0] : hostHeader;
 
-  const isBaseHost = !host || BASE_HOSTS.has(host) || host.endsWith(".namesranker.com");
+  const isBaseHost =
+    !host || BASE_HOSTS.has(host) || host.endsWith(".namesranker.com") || isIpAddress(host);
 
   if (!isBaseHost) {
     const url = req.nextUrl.clone();
