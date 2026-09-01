@@ -15,7 +15,7 @@ const columns: { title: string; links: { href: string; label: string }[] }[] = [
     title: "Company",
     links: [
       { href: "/names", label: "Name directory" },
-      { href: "#faq", label: "FAQ" },
+      { href: "/faq", label: "FAQ" },
       { href: "/login", label: "Sign in" },
       { href: "/settings", label: "Settings" },
     ],
@@ -25,7 +25,7 @@ const columns: { title: string; links: { href: string; label: string }[] }[] = [
     links: [
       { href: "/blog", label: "Blog" },
       { href: "/usecases", label: "Use cases" },
-      { href: "#faq", label: "FAQ" },
+      { href: "/faq", label: "FAQ" },
       { href: "#features", label: "Features" },
     ],
   },

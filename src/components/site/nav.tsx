@@ -18,7 +18,7 @@ const resourceColumns: { title: string; items: { href: string; label: string; de
     {
       title: "Support",
       items: [
-        { href: "#faq", label: "FAQ", desc: "Common questions, answered" },
+        { href: "/faq", label: "FAQ", desc: "Common questions, answered" },
         { href: "/names", label: "Name directory", desc: "Browse claimed names" },
         { href: "/pricing", label: "Premium", desc: "Features & pricing" },
       ],
