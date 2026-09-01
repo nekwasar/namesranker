@@ -11,7 +11,7 @@ test.beforeAll(async ({ playwright }) => {
 
 test.afterAll(async () => {
   await api.dispose();
-  await cleanup("e2e-");
+  await cleanup("e2e-upload");
 });
 
 async function signIn(page: import("@playwright/test").Page, email: string) {

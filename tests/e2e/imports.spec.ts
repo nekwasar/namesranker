@@ -38,7 +38,7 @@ test.beforeAll(async ({ playwright }) => {
 test.afterAll(async () => {
   await api.dispose();
   await new Promise<void>((resolve) => feedServer.close(() => resolve()));
-  await cleanup("e2e-");
+  await cleanup("e2e-import");
 });
 
 async function signIn(page: import("@playwright/test").Page, email: string) {

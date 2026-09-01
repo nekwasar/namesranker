@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { getDb, cleanup } from "./helpers/db";
+import { getDb } from "./helpers/db";
 
 test.beforeAll(async () => {
   const db = await getDb();
@@ -8,10 +8,6 @@ test.beforeAll(async () => {
   if (count.rows[0].n < 2) {
     throw new Error("Demo profiles not seeded. Run: npm run db:seed:demo");
   }
-});
-
-test.afterAll(async () => {
-  await cleanup("e2e-");
 });
 
 test("hub page renders with SEO metadata and JSON-LD Person", async ({ page }) => {

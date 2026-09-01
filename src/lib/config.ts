@@ -16,7 +16,7 @@ export const config = {
     : `https://${env("VERCEL_URL") || env("BASE_DOMAIN", "namesranker.com")}`,
   brevo: {
     apiKey: env("BREVO_API_KEY"),
-    senderEmail: env("BREVO_SENDER_EMAIL", "noreply@namesranker.com"),
+    senderEmail: env("BREVO_SENDER_EMAIL", "no-reply@namesranker.com"),
     senderName: env("BREVO_SENDER_NAME", "NamesRanker"),
   },
   stripe: {

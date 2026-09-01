@@ -21,9 +21,6 @@ test("signup page validates a strong password and completes", async ({ page }) =
 
   // Weak password: the checklist shows unmet rules.
   await page.getByTestId("signup-password").fill("short");
-  const unmet = page
-    .getByTestId("signup-strength")
-    .locator("li", { hasNot: page.getByTestId("signup-strength") });
   await expect(page.getByTestId("signup-strength")).toContainText("At least 8 characters");
 
   const email = `e2e-auth-signup-${Date.now()}@example.com`;
