@@ -137,6 +137,55 @@
   height: 1rem;
 }
 
+/* Featured hero */
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 2rem; /* p-8 */
+  background: rgba(229, 229, 229, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  margin-bottom: 2.5rem;
+}
+
+.hero:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.heroTag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #666666;
+  margin-bottom: 1rem;
+}
+
+.heroTitle {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  max-width: 40rem;
+}
+
+.heroExcerpt {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #555555;
+  max-width: 44rem;
+  margin-bottom: 1.5rem;
+}
+
 /* Card grid */
 .grid {
   display: grid;

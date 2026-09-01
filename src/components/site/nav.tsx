@@ -12,7 +12,11 @@ const resourceColumns: { title: string; items: { href: string; label: string; de
       items: [
         { href: "/blog", label: "Blog", desc: "Product news & SEO insights" },
         { href: "/usecases", label: "Use cases", desc: "Who it's for, with examples" },
-        { href: "#how-it-works", label: "SEO guide", desc: "How your page ranks #1" },
+        {
+          href: "/blog/your-name-is-a-search-query",
+          label: "SEO guide",
+          desc: "How your page ranks #1",
+        },
       ],
     },
     {

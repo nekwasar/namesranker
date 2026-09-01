@@ -10,6 +10,30 @@ test("blog landing renders the card grid with posts", async ({ page }) => {
   await expect(cards.first()).toBeVisible();
 });
 
+test("featured post renders as a hero and links to its article", async ({ page }) => {
+  await page.goto("/blog");
+  const hero = page.getByTestId("blog-featured");
+  await expect(hero).toBeVisible();
+  await expect(hero).toContainText("Featured");
+  await expect(hero).toContainText(/search query/i);
+  await hero.click();
+  await page.waitForURL("**/blog/your-name-is-a-search-query");
+  await expect(page.getByRole("heading", { name: /Your name is a search query/ })).toBeVisible();
+});
+
+test("featured article renders headings, list, and no preview sign-off", async ({ page }) => {
+  await page.goto("/blog/your-name-is-a-search-query");
+  await expect(page.getByRole("heading", { name: /Your name is a search query/ })).toBeVisible();
+  // Full article has sub-headings and a checklist.
+  await expect(page.getByRole("heading", { name: /highest-intent keyword/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /Metadata is where rankings are won/ })
+  ).toBeVisible();
+  await expect(page.locator("ul").first()).toBeVisible();
+  // The preview sign-off must not appear on a full post.
+  await expect(page.getByText(/this is a preview/)).toHaveCount(0);
+});
+
 test("category tabs filter the grid", async ({ page }) => {
   await page.goto("/blog");
   await page.getByTestId("blog-tab-engineering").click();

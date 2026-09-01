@@ -47,7 +47,13 @@ export default function BlogIndex({ posts }: { posts: BlogPost[] }) {
   const [category, setCategory] = useState<string>("All");
   const [query, setQuery] = useState("");
 
-  const visible = useMemo(() => filterPosts(posts, category, query), [posts, category, query]);
+  const featured = posts.find((p) => p.featured);
+  // The featured post lives in the hero above the grid; exclude it from the
+  // filtered grid so it never appears twice.
+  const visible = useMemo(
+    () => filterPosts(posts, category, query).filter((p) => p !== featured),
+    [posts, category, query, featured]
+  );
 
   return (
     <div className={styles.page}>
@@ -93,6 +99,37 @@ export default function BlogIndex({ posts }: { posts: BlogPost[] }) {
           </Link>
         </div>
       </div>
+
+      {featured && category === "All" && query.trim() === "" ? (
+        <Link href={`/blog/${featured.slug}`} className={styles.hero} data-testid="blog-featured">
+          <div className={styles.heroMain}>
+            <p className={styles.heroTag}>Featured · {featured.category}</p>
+            <h2 className={styles.heroTitle}>{featured.title}</h2>
+            <p className={styles.heroExcerpt}>{featured.excerpt}</p>
+          </div>
+          <div className={styles.cardFooter}>
+            <div className={styles.avatars}>
+              {featured.authors.slice(0, 3).map((author, i) =>
+                author.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    key={i}
+                    src={author.avatarUrl}
+                    alt=""
+                    className={styles.avatar}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span key={i} className={styles.avatarFallback} aria-hidden="true">
+                    {author.name.charAt(0)}
+                  </span>
+                )
+              )}
+            </div>
+            <span className={styles.authorLine}>{authorLine(featured.authors)}</span>
+          </div>
+        </Link>
+      ) : null}
 
       {visible.length === 0 ? (
         <p className={styles.empty} data-testid="blog-empty">

@@ -63,12 +63,26 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         </header>
 
         <div className={styles.body}>
-          {post.body.map((paragraph, i) => (
-            <p key={i}>{paragraph}</p>
-          ))}
-          <p className={styles.signoff}>
-            Full posts are coming to the NamesRanker blog — this is a preview of the post.
-          </p>
+          {post.body.map((block, i) =>
+            typeof block === "string" ? (
+              <p key={i}>{block}</p>
+            ) : "h" in block ? (
+              <h2 key={i} className={styles.subhead}>
+                {block.h}
+              </h2>
+            ) : (
+              <ul key={i} className={styles.list}>
+                {block.ul.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            )
+          )}
+          {!post.full && (
+            <p className={styles.signoff}>
+              Full posts are coming to the NamesRanker blog — this is a preview of the post.
+            </p>
+          )}
         </div>
       </article>
       <Footer />

@@ -42,6 +42,29 @@ describe("blog post data", () => {
     expect(getBlogPost(blogPosts[0].slug)?.title).toBe(blogPosts[0].title);
     expect(getBlogPost("does-not-exist")).toBeUndefined();
   });
+
+  it("has exactly one featured post, and it is a full article", () => {
+    const featured = blogPosts.filter((p) => p.featured);
+    expect(featured).toHaveLength(1);
+    expect(featured[0].full).toBe(true);
+    // A full article should have a substantial body.
+    expect(featured[0].body.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it("featured post body contains headings and lists (blocks)", () => {
+    const featured = blogPosts.find((p) => p.featured)!;
+    const headings = featured.body.filter((b) => typeof b === "object" && "h" in b);
+    const lists = featured.body.filter((b) => typeof b === "object" && "ul" in b);
+    expect(headings.length).toBeGreaterThanOrEqual(3);
+    expect(lists.length).toBeGreaterThanOrEqual(1);
+    // Every heading and list has non-empty content.
+    for (const h of headings) {
+      expect((h as { h: string }).h.trim().length).toBeGreaterThan(3);
+    }
+    for (const l of lists) {
+      expect((l as { ul: string[] }).ul.length).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe("filterPosts", () => {

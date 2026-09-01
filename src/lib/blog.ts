@@ -22,6 +22,9 @@ export interface BlogAuthor {
   avatarUrl?: string;
 }
 
+/** A body block: paragraph, heading, or bulleted list. */
+export type BlogBlock = string | { h: string } | { ul: string[] };
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -30,13 +33,59 @@ export interface BlogPost {
   /** ISO date (YYYY-MM-DD). */
   date: string;
   authors: BlogAuthor[];
-  /** Body paragraphs (kept short — full posts land with the CMS swap). */
-  body: string[];
+  /** Body blocks: strings are paragraphs, `{ h }` headings, `{ ul }` lists. */
+  body: BlogBlock[];
+  /** Pinned as the hero card on the blog index. */
+  featured?: boolean;
+  /** Marked as a complete article (suppresses the preview sign-off). */
+  full?: boolean;
 }
 
 const avatar = (img: number) => `https://i.pravatar.cc/96?img=${img}`;
 
 export const blogPosts: BlogPost[] = [
+  {
+    slug: "your-name-is-a-search-query",
+    title: "Your name is a search query. Your metadata is the answer.",
+    excerpt:
+      "The #1 result for your name isn't decided by luck — it's decided by metadata. Here's the exact on-page checklist that puts your page first.",
+    category: "v0",
+    date: "2026-09-01",
+    authors: [
+      { name: "Priya Anand", role: "Head of SEO", avatarUrl: avatar(9) },
+      { name: "Mara Voss", role: "Engineering Lead", avatarUrl: avatar(5) },
+    ],
+    featured: true,
+    full: true,
+    body: [
+      "Google your own name right now. Look at the first page. Chances are the top result isn't you — it's a directory, a social profile, or someone else who shares your name. Every click that page earns is a first impression you never got to make.",
+      "Here's the part most people miss: the ranking isn't decided by luck or by who has the biggest social following. It's decided by a handful of on-page signals — and the single most important one is metadata.",
+      { h: "Your name is the highest-intent keyword you'll ever own" },
+      "People search for you at the exact moment they're about to hire, buy from, or vouch for you. That's not just a vanity query — it's purchase-intent search with your name as the query. And an exact-match page — your name in the title, the H1, the URL — is the strongest relevance signal Google has for that query.",
+      "An exact-match name page starts with an enormous advantage. The work is making sure Google trusts that page enough to rank it first. That's where metadata comes in.",
+      { h: "Metadata is where rankings are won" },
+      "Search engines read your page in a specific order: the title tag first, then the meta description, then the structured data. Get those three right and you've told Google what the page is, who it's for, and why it should rank — before a single word of body copy is considered.",
+      {
+        ul: [
+          "Title tag: your name, exact match, under ~60 characters. No brand suffix diluting it.",
+          "Meta description: a sentence that makes the click inevitable — what you do and who you help.",
+          "One H1, and only one: your name. Headings are an outline, not a decoration.",
+          "Person JSON-LD structured data: Google understands the page is about a real person — with name, job title, and social profiles attached.",
+          "Canonical URL: the page must point at itself, so it never competes with a stray copy.",
+        ],
+      },
+      "That checklist is exactly what a NamesRanker page ships with. Clean semantic markup, structured data, and a canonical that never fights itself — so Google gets the full picture in milliseconds.",
+      { h: "Speed is the ranking factor nobody argues about" },
+      "Metadata gets you considered; speed gets you ranked. A slow page bleeds rankings no matter how perfect the title is. Your name page should render statically — pre-built HTML served instantly, not assembled on every visit.",
+      "This is why the page you get from NamesRanker is statically generated and revalidated the moment you edit it. Readers get a sub-second load, Google gets a fast, fresh page, and you get a page that works 24/7 while you sleep.",
+      { h: "Give Google a map, not a mystery" },
+      "A single page is a start, but one page can't cover a career. That's what sub-pages are for: portfolio, resume, writing, talks — each with its own targeted metadata, each linking back to your name page.",
+      "Search engines follow links like readers follow footnotes. Every sub-page pointing at your hub tells Google your name page is the authority — and authority is what breaks a tie between two pages that both want the #1 spot.",
+      { h: "Watch it work" },
+      "You don't have to take any of this on faith. Connect Google Search Console to your page and you'll see the queries people typed to find you, your impressions, and your average position — the actual proof that the metadata is doing its job.",
+      "Your name is already a search query. The only question is whether the answer on Google's first page is you. Claim your name, ship the metadata, and make it yours.",
+    ],
+  },
   {
     slug: "end-of-duplicate-name-chaos",
     title: "The end of duplicate-name chaos for professionals",
