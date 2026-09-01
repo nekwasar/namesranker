@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
-import { blogPosts } from "@/lib/blog";
+import { blogAuthors, blogPosts } from "@/lib/blog";
 import { useCases } from "@/lib/usecases";
 
 export const revalidate = 3600;
@@ -38,6 +38,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(`${post.date}T00:00:00Z`),
       changeFrequency: "monthly" as const,
       priority: 0.5,
+    })),
+    { url: `${base}/blog/authors`, changeFrequency: "monthly", priority: 0.4 },
+    ...blogAuthors.map((a) => ({
+      url: `${base}/blog/authors/${a.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.3,
     })),
   ];
 

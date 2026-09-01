@@ -1,0 +1,131 @@
+.page {
+  max-width: 80rem; /* max-w-7xl */
+  margin: 0 auto;
+  padding: 3rem 1.5rem; /* px-6 py-12 */
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 4rem 3rem; /* md:px-12 md:py-16 */
+  }
+}
+
+.title {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #111111;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .title {
+    font-size: 3rem; /* md:text-5xl */
+  }
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 42rem;
+}
+
+.rule {
+  border: none;
+  border-top: 1px solid var(--hairline);
+  margin: 0 0 2.5rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem; /* gap-6 */
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem; /* md:gap-8 */
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.75rem; /* p-7 */
+  background: rgba(229, 229, 229, 0.6); /* bg-[#E5E5E5]/60 */
+  border: 1px solid rgba(0, 0, 0, 0.05); /* border-black/5 */
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* hover:shadow-md */
+}
+
+.avatarWrap {
+  margin-bottom: 1.25rem;
+}
+
+.avatar,
+.avatarFallback {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  background: #111111;
+}
+
+.cardName {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111111;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.cardRole {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #666666;
+  margin-bottom: 0.875rem;
+}
+
+.cardBio {
+  font-size: 0.875rem;
+  color: #555555;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+.cardCount {
+  margin-top: auto;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #111111;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}

@@ -96,6 +96,18 @@
   font-weight: 600;
 }
 
+.authorLink {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(0, 0, 0, 0.25);
+  transition: text-decoration-color 0.15s ease;
+}
+
+.authorLink:hover {
+  text-decoration-color: #111;
+}
+
 .authorRole {
   font-size: 0.78rem;
   color: var(--muted);

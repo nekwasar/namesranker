@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   BLOG_CATEGORIES,
   authorLine,
+  blogAuthors,
   blogPosts,
   filterPosts,
   formatBlogDate,
+  getBlogAuthor,
   getBlogPost,
+  postsByAuthor,
 } from "@/lib/blog";
 
 describe("blog post data", () => {
@@ -64,6 +67,41 @@ describe("blog post data", () => {
     for (const l of lists) {
       expect((l as { ul: string[] }).ul.length).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("authors registry", () => {
+  it("has unique slugs and names, and non-empty bios", () => {
+    const slugs = blogAuthors.map((a) => a.slug);
+    const names = blogAuthors.map((a) => a.name);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    expect(new Set(names).size).toBe(names.length);
+    for (const a of blogAuthors) {
+      expect(a.bio.trim().length).toBeGreaterThan(20);
+      expect(a.slug).toMatch(/^[a-z0-9-]+$/);
+    }
+  });
+
+  it("every post author resolves to a profile (or is the team)", () => {
+    const names = new Set(blogAuthors.map((a) => a.name));
+    for (const post of blogPosts) {
+      for (const author of post.authors) {
+        expect(names.has(author.name), `${author.name} should have a profile`).toBe(true);
+      }
+    }
+  });
+
+  it("getBlogAuthor resolves by slug and misses unknown slugs", () => {
+    expect(getBlogAuthor("priya-anand")?.name).toBe("Priya Anand");
+    expect(getBlogAuthor("does-not-exist")).toBeUndefined();
+  });
+
+  it("postsByAuthor returns only that author's posts, newest first", () => {
+    const posts = postsByAuthor(getBlogAuthor("mara-voss")!);
+    expect(posts.length).toBeGreaterThan(0);
+    expect(posts.every((p) => p.authors.some((a) => a.name === "Mara Voss"))).toBe(true);
+    const dates = posts.map((p) => p.date);
+    expect([...dates].sort().reverse()).toEqual(dates);
   });
 });
 

@@ -70,6 +70,47 @@ test("RSS feed is served", async ({ page }) => {
   expect(body).toContain("/blog/search-console-per-page");
 });
 
+test("authors index renders cards linking to profiles", async ({ page }) => {
+  await page.goto("/blog/authors");
+  await expect(page.getByRole("heading", { name: "Authors" })).toBeVisible();
+  const cards = page.getByTestId("authors-grid").locator("a");
+  expect(await cards.count()).toBeGreaterThanOrEqual(6);
+  await cards.first().click();
+  await page.waitForURL("**/blog/authors/**");
+  await expect(page.getByRole("link", { name: "All authors" })).toBeVisible();
+});
+
+test("author profile lists their posts and links back", async ({ page }) => {
+  await page.goto("/blog/authors/priya-anand");
+  await expect(page.getByRole("heading", { name: "Priya Anand" })).toBeVisible();
+  await expect(page.getByText(/search query/)).toBeVisible();
+  // Author byline on the post links to the profile.
+  await page.goto("/blog/your-name-is-a-search-query");
+  await page.getByRole("link", { name: "Priya Anand" }).first().click();
+  await page.waitForURL("**/blog/authors/priya-anand");
+});
+
+test("unknown author slug returns 404", async ({ page }) => {
+  const res = await page.goto("/blog/authors/does-not-exist");
+  expect(res?.status()).toBe(404);
+});
+
+test("footer has no duplicate FAQ and links to authors", async ({ page }) => {
+  await page.goto("/");
+  const faq = page
+    .getByRole("navigation", { name: "Resources" })
+    .getByRole("link", { name: "FAQ" });
+  await expect(faq).toHaveCount(1);
+  // No NR logo mark in the footer.
+  await expect(page.locator("footer").getByText("NR")).toHaveCount(0);
+  await page
+    .getByRole("navigation", { name: "Resources" })
+    .getByRole("link", { name: "Authors" })
+    .click();
+  await page.waitForURL("**/blog/authors");
+  await expect(page.getByRole("heading", { name: "Authors" })).toBeVisible();
+});
+
 test("a post page renders from a card link", async ({ page }) => {
   await page.goto("/blog");
   await page.getByRole("link", { name: /Search Console, now per page/ }).click();

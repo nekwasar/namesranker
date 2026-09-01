@@ -275,3 +275,76 @@ export function authorLine(authors: BlogAuthor[]): string {
     authors.length - 2 === 1 ? "" : "s"
   }`;
 }
+
+export interface BlogAuthorProfile {
+  slug: string;
+  name: string;
+  role?: string;
+  avatarUrl?: string;
+  bio: string;
+}
+
+/**
+ * Author registry for the /blog/authors pages. Bios are one or two sentences;
+ * posts are linked automatically by matching author names on each post.
+ */
+export const blogAuthors: BlogAuthorProfile[] = [
+  {
+    slug: "priya-anand",
+    name: "Priya Anand",
+    role: "Head of SEO",
+    avatarUrl: avatar(9),
+    bio: "Priya leads NamesRanker's SEO practice — the exact-match pages, structured data, and canonical care behind the platform.",
+  },
+  {
+    slug: "mara-voss",
+    name: "Mara Voss",
+    role: "Engineering Lead",
+    avatarUrl: avatar(5),
+    bio: "Mara runs the platform team that keeps every public page statically rendered, instantly revalidated, and ranking.",
+  },
+  {
+    slug: "kai-tanaka",
+    name: "Kai Tanaka",
+    role: "Platform Engineer",
+    avatarUrl: avatar(12),
+    bio: "Kai builds the race-safe claim engine and the security layers that keep name claims fair and pages trustworthy.",
+  },
+  {
+    slug: "ayo-bello",
+    name: "Ayo Bello",
+    role: "Data Engineer",
+    avatarUrl: avatar(7),
+    bio: "Ayo owns imports and the directory — syncing RSS, GitHub, and YouTube content into pages that stay fresh.",
+  },
+  {
+    slug: "dara-osei",
+    name: "Dara Osei",
+    role: "Product",
+    avatarUrl: avatar(3),
+    bio: "Dara shapes what NamesRanker ships — from the onboarding flow to the features that make claiming a name effortless.",
+  },
+  {
+    slug: "priya-nair",
+    name: "Priya Nair",
+    role: "Customer Success",
+    avatarUrl: avatar(21),
+    bio: "Priya helps professionals get their pages live and ranked, and turns their questions into product improvements.",
+  },
+  {
+    slug: "namesranker-team",
+    name: "NamesRanker Team",
+    bio: "Updates written across the whole NamesRanker team — product, engineering, and growth.",
+  },
+];
+
+export function getBlogAuthor(slug: string): BlogAuthorProfile | undefined {
+  return blogAuthors.find((a) => a.slug === slug);
+}
+
+/** Posts credited to an author (matched by name, newest first). */
+export function postsByAuthor(author: BlogAuthorProfile): BlogPost[] {
+  return blogPosts
+    .filter((p) => p.authors.some((a) => a.name === author.name))
+    .sort((a, b) => b.date.localeCompare(a.date));
+}

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import NavBar from "@/components/site/nav";
 import Footer from "@/components/site/footer";
-import { authorLine, blogPosts, formatBlogDate, getBlogPost } from "@/lib/blog";
+import { blogAuthors, blogPosts, formatBlogDate, getBlogPost } from "@/lib/blog";
 import styles from "./post.module.css";
 
 export const dynamicParams = false;
@@ -54,7 +54,25 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
               )}
             </div>
             <div className={styles.authors}>
-              <span className={styles.authorName}>{authorLine(post.authors)}</span>
+              <span className={styles.authorName}>
+                {post.authors.map((author, i) => {
+                  const profile = blogAuthors.find((a) => a.name === author.name);
+                  const separator = i > 0 ? ", " : "";
+                  return profile ? (
+                    <span key={author.name}>
+                      {separator}
+                      <Link href={`/blog/authors/${profile.slug}`} className={styles.authorLink}>
+                        {author.name}
+                      </Link>
+                    </span>
+                  ) : (
+                    <span key={author.name}>
+                      {separator}
+                      {author.name}
+                    </span>
+                  );
+                })}
+              </span>
               {post.authors[0]?.role ? (
                 <span className={styles.authorRole}>{post.authors[0].role}</span>
               ) : null}
