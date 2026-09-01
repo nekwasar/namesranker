@@ -38,19 +38,6 @@
   border-top: 1px solid var(--hairline);
 }
 
-.tag {
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border: 1px solid var(--hairline-strong);
-  border-radius: 999px;
-  padding: 3px 10px;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-
 .postTitle {
   font-size: 1.25rem;
   font-weight: 700;

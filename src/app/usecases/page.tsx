@@ -1,6 +1,6 @@
 import NavBar from "@/components/site/nav";
 import Footer from "@/components/site/footer";
-import styles from "../blog/content.module.css";
+import styles from "./usecases.module.css";
 
 export const metadata = {
   title: "Use cases — NamesRanker",

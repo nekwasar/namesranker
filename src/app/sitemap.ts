@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db";
 import { config } from "@/lib/config";
+import { blogPosts } from "@/lib/blog";
 
 export const revalidate = 3600;
 
@@ -23,6 +24,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/names`, changeFrequency: "daily", priority: 0.8 },
     { url: `${base}/pricing`, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/blog`, changeFrequency: "daily", priority: 0.7 },
+    ...blogPosts.map((post) => ({
+      url: `${base}/blog/${post.slug}`,
+      lastModified: new Date(`${post.date}T00:00:00Z`),
+      changeFrequency: "monthly" as const,
+      priority: 0.5,
+    })),
   ];
 
   const userRoutes: MetadataRoute.Sitemap = pages.map((page) => {
