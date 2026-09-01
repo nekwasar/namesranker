@@ -62,6 +62,10 @@ enum ShowcaseStatus {
 model User {
   id                   String   @id @default(cuid())
   email                String   @unique
+  firstName            String?
+  lastName             String?
+  passwordHash         String?
+  emailVerifiedAt      DateTime?
   plan                 Plan     @default(FREE)
   stripeCustomerId     String?  @unique
   stripeSubscriptionId String?  @unique
@@ -76,6 +80,13 @@ model User {
   pages         Page[]
   monitoring    NameMonitoringRule[]
   auditLogs     AuditLog[]
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String   @default("homepage")
+  createdAt DateTime @default(now())
 }
 
 model NameClaim {
@@ -232,9 +243,12 @@ model MagicLinkToken {
   id        String    @id @default(cuid())
   tokenHash String    @unique
   email     String
+  /** Token purpose: MAGIC_LINK (default), EMAIL_VERIFY, PASSWORD_RESET. */
+  purpose   String    @default("MAGIC_LINK")
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime  @default(now())
 
   @@index([email])
+  @@index([purpose])
 }

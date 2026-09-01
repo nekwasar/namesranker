@@ -109,6 +109,40 @@ export function claimConfirmationEmail(to: string, slug: string, url: string) {
   };
 }
 
+export function verifyEmailEmail(to: string, url: string) {
+  return {
+    to,
+    subject: "Verify your email — NamesRanker",
+    tags: ["email-verify"],
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+        <h2>Confirm your email address</h2>
+        <p>You're one step away from claiming your name. Confirm your email to finish creating your account.</p>
+        <p><a href="${url}" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;">Verify my email</a></p>
+        <p style="color:#666;font-size:13px;">This link expires in 24 hours and can only be used once. If you didn't create a NamesRanker account, you can safely ignore this email.</p>
+      </div>
+    `,
+    text: `Confirm your email to finish creating your NamesRanker account: ${url}\n\nThis link expires in 24 hours and can only be used once.`,
+  };
+}
+
+export function passwordResetEmail(to: string, url: string) {
+  return {
+    to,
+    subject: "Reset your password — NamesRanker",
+    tags: ["password-reset"],
+    html: `
+      <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px;">
+        <h2>Reset your password</h2>
+        <p>Click the button below to choose a new password for your NamesRanker account.</p>
+        <p><a href="${url}" style="display:inline-block;background:#111;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;">Reset password</a></p>
+        <p style="color:#666;font-size:13px;">This link expires in 1 hour and can only be used once. If you didn't request a reset, you can safely ignore this email.</p>
+      </div>
+    `,
+    text: `Reset your NamesRanker password here: ${url}\n\nThis link expires in 1 hour and can only be used once.`,
+  };
+}
+
 export function contactFormEmail(name: string, email: string, subject: string, message: string) {
   const to = config.contact.email;
   return {

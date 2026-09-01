@@ -1,0 +1,246 @@
+.page {
+  min-height: 100dvh;
+  max-width: 26rem;
+  margin: 0 auto;
+  padding: 4.5rem 1.5rem 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.wordmark {
+  font-family: var(--font-noto-serif), Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--foreground);
+  text-decoration: none;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  margin: 0 0 0.625rem;
+}
+
+.subtitle {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0 0 2rem;
+}
+
+.body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Form primitives --- */
+
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.input {
+  font: inherit;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9375rem;
+  color: var(--foreground);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.input::placeholder {
+  color: var(--faint);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--foreground);
+  box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.07);
+}
+
+.error {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #b00020;
+  margin: 0;
+}
+
+.reasons {
+  list-style: none;
+  margin: 0.125rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.reason {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.reasonMet {
+  color: #1a7f37;
+}
+
+.submit {
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--foreground);
+  border: 1px solid var(--foreground);
+  border-radius: 0.5rem;
+  padding: 0.6875rem 1.25rem;
+  cursor: pointer;
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+  margin-top: 0.25rem;
+}
+
+.submit:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.submit:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.footer {
+  width: 100%;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--hairline);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.footerText {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+.link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(10, 10, 10, 0.3);
+  transition: text-decoration-color 150ms ease;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.link:hover {
+  text-decoration-color: var(--foreground);
+}
+
+/* --- Success / info panels (flat, no card) --- */
+
+.success {
+  width: 100%;
+  border-top: 1px solid var(--hairline-strong);
+  border-bottom: 1px solid var(--hairline-strong);
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.successTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+  margin: 0;
+}
+
+.successBody {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* --- Login method tabs --- */
+
+.tabs {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0.375rem 0 0.625rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease;
+}
+
+.tabActive {
+  color: var(--foreground);
+  border-bottom-color: var(--foreground);
+}
+
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 1.125rem;
+  }
+}

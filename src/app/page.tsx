@@ -4,6 +4,7 @@ import { getScarcity, getDemoProfiles } from "@/lib/landing";
 import { getRecentClaims } from "@/lib/claims/availability";
 import NavBar from "@/components/site/nav";
 import Footer from "@/components/site/footer";
+import Newsletter from "@/components/site/newsletter";
 import { HeroSection } from "@/components/site/hero-demo";
 import FAQ from "@/components/site/faq";
 
@@ -312,6 +313,22 @@ export default async function Home() {
           <Link href="/onboarding" className={styles.ctaPrimary}>
             Claim your name
           </Link>
+        </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className={styles.newsletter} data-testid="newsletter-section">
+        <div className={styles.container}>
+          <div className={styles.newsletterInner}>
+            <div>
+              <h2 className={styles.newsletterTitle}>Rank your name. It starts in your inbox.</h2>
+              <p className={styles.newsletterSub}>
+                One short email a month on claiming your name, winning your search result, and
+                owning your presence. No noise.
+              </p>
+            </div>
+            <Newsletter />
+          </div>
         </div>
       </section>
 

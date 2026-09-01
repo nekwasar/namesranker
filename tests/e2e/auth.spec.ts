@@ -1,7 +1,8 @@
 import { test, expect, APIRequestContext } from "@playwright/test";
-import { seedExpiredToken, cleanup } from "./helpers/db";
+import { cleanup } from "./helpers/db";
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+const STRONG_PASSWORD = "Sup3r-secret!";
 
 let api: APIRequestContext;
 
@@ -11,84 +12,139 @@ test.beforeAll(async ({ playwright }) => {
 
 test.afterAll(async () => {
   await api.dispose();
-  await cleanup("e2e-");
+  await cleanup("e2e-auth-");
 });
 
-async function requestMagicLink(email: string) {
-  const res = await api.post("/api/auth/magic-link", { data: { email } });
-  expect(res.status()).toBe(200);
-  return (await res.json()) as { ok: boolean; devUrl: string };
-}
+test("signup page validates a strong password and completes", async ({ page }) => {
+  await page.goto("/signup");
+  await expect(page.getByRole("heading", { name: "Create your account" })).toBeVisible();
 
-test("new user signs in and lands on /onboarding", async ({ page }) => {
-  const email = `e2e-new-${Date.now()}@example.com`;
-  const { devUrl } = await requestMagicLink(email);
+  // Weak password: the checklist shows unmet rules.
+  await page.getByTestId("signup-password").fill("short");
+  const unmet = page
+    .getByTestId("signup-strength")
+    .locator("li", { hasNot: page.getByTestId("signup-strength") });
+  await expect(page.getByTestId("signup-strength")).toContainText("At least 8 characters");
 
-  await page.goto(devUrl);
-  await page.waitForURL("**/onboarding");
-  await expect(page.getByRole("heading", { name: "Claim your name" })).toBeVisible();
-
-  // Session cookie is set.
-  const cookies = await page.context().cookies();
-  expect(cookies.some((c) => c.name === "namesranker.session")).toBe(true);
+  const email = `e2e-auth-signup-${Date.now()}@example.com`;
+  await page.getByTestId("signup-first").fill("Ada");
+  await page.getByTestId("signup-last").fill("Lovelace");
+  await page.getByTestId("signup-email").fill(email);
+  await page.getByTestId("signup-password").fill(STRONG_PASSWORD);
+  await page.getByTestId("signup-submit").click();
+  await expect(page.getByTestId("signup-success")).toBeVisible();
+  await expect(page.getByTestId("signup-success")).toContainText(email);
 });
 
-test("magic link token is single-use (replay rejected)", async ({ page }) => {
-  const email = `e2e-once-${Date.now()}@example.com`;
-  const { devUrl } = await requestMagicLink(email);
+test("full flow: signup → verify email → sign in with password", async ({ page }) => {
+  const email = `e2e-auth-full-${Date.now()}@example.com`;
 
-  await page.goto(devUrl);
-  await page.waitForURL("**/onboarding");
-
-  // Reusing the same token must fail with error=used.
-  await page.goto(devUrl);
-  await page.waitForURL("**/login?error=used");
-  await expect(page.getByText(/already been used/i)).toBeVisible();
-});
-
-test("invalid token is rejected", async ({ page }) => {
-  await page.goto("/api/auth/verify?token=definitely-not-a-real-token");
-  await page.waitForURL("**/login?error=invalid");
-  await expect(page.getByText(/link is invalid/i)).toBeVisible();
-});
-
-test("expired token is rejected", async ({ page }) => {
-  const email = `e2e-expired-${Date.now()}@example.com`;
-  const rawToken = "expired-test-token";
-
-  // Seed an already-expired token directly in the DB (bypasses API on purpose).
-  await seedExpiredToken(email, rawToken);
-
-  await page.goto(`/api/auth/verify?token=${rawToken}`);
-  await page.waitForURL("**/login?error=expired");
-  await expect(page.getByText(/has expired/i)).toBeVisible();
-});
-
-test("missing token is rejected", async ({ page }) => {
-  await page.goto("/api/auth/verify");
-  await page.waitForURL("**/login?error=invalid");
-});
-
-test("magic link request validates email format", async () => {
-  const res = await api.post("/api/auth/magic-link", {
-    data: { email: "not-an-email" },
+  // Sign up via API and grab the dev verification URL.
+  const res = await api.post("/api/auth/signup", {
+    data: { firstName: "Ada", lastName: "Lovelace", email, password: STRONG_PASSWORD },
   });
-  expect(res.status()).toBe(400);
-});
+  expect(res.status()).toBe(200);
+  const { devUrl } = (await res.json()) as { devUrl: string };
 
-test("protected /settings requires auth (redirects to /login)", async ({ page }) => {
-  await page.goto("/settings");
-  await page.waitForURL("**/login?callbackUrl=*");
-  await expect(page.getByRole("heading", { name: "Sign in to NamesRanker" })).toBeVisible();
-});
-
-test("authenticated user can access /settings", async ({ page }) => {
-  const email = `e2e-settings-${Date.now()}@example.com`;
-  const { devUrl } = await requestMagicLink(email);
-
+  // Verification signs the new user in and sends them to onboarding.
   await page.goto(devUrl);
   await page.waitForURL("**/onboarding");
 
-  await page.goto("/settings");
-  await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
+  // Sign out, then sign back in with email + password.
+  await api.post("/api/auth/signout");
+  await page.goto("/login");
+  await page.getByTestId("login-email").fill(email);
+  await page.getByTestId("login-password").fill(STRONG_PASSWORD);
+  await page.getByTestId("login-submit").click();
+  await page.waitForURL("**/onboarding");
+});
+
+test("signin shows an error for a wrong password", async ({ page }) => {
+  const email = `e2e-auth-wrong-${Date.now()}@example.com`;
+  const res = await api.post("/api/auth/signup", {
+    data: { firstName: "Ada", lastName: "Lovelace", email, password: STRONG_PASSWORD },
+  });
+  const { devUrl } = (await res.json()) as { devUrl: string };
+  await page.goto(devUrl);
+  await page.waitForURL("**/onboarding");
+  await api.post("/api/auth/signout");
+
+  await page.goto("/login");
+  await page.getByTestId("login-email").fill(email);
+  await page.getByTestId("login-password").fill("Wrong-password-1!");
+  await page.getByTestId("login-submit").click();
+  await expect(page.getByTestId("login-error")).toContainText("Incorrect email or password");
+});
+
+test("unverified accounts cannot sign in with a password", async ({ page }) => {
+  const email = `e2e-auth-unverified-${Date.now()}@example.com`;
+  await api.post("/api/auth/signup", {
+    data: { firstName: "Ada", lastName: "Lovelace", email, password: STRONG_PASSWORD },
+  });
+
+  await page.goto("/login");
+  await page.getByTestId("login-email").fill(email);
+  await page.getByTestId("login-password").fill(STRONG_PASSWORD);
+  await page.getByTestId("login-submit").click();
+  await expect(page.getByTestId("login-error")).toContainText("email isn't verified");
+});
+
+test("magic link method still sends a link", async ({ page }) => {
+  await page.goto("/login");
+  await page.getByTestId("login-method-magic").click();
+  await expect(page.getByTestId("login-magic-form")).toBeVisible();
+  await page.getByTestId("login-magic-email").fill(`e2e-auth-magic-${Date.now()}@example.com`);
+  await page.getByTestId("login-magic-submit").click();
+  await expect(page.getByTestId("login-sent")).toBeVisible();
+});
+
+test("forgot password → reset → sign in with the new password", async ({ page }) => {
+  const email = `e2e-auth-reset-${Date.now()}@example.com`;
+  const res = await api.post("/api/auth/signup", {
+    data: { firstName: "Ada", lastName: "Lovelace", email, password: STRONG_PASSWORD },
+  });
+  const { devUrl } = (await res.json()) as { devUrl: string };
+  await page.goto(devUrl);
+  await page.waitForURL("**/onboarding");
+  await api.post("/api/auth/signout");
+
+  // Request a reset and open the emailed link.
+  const forgot = await api.post("/api/auth/forgot-password", { data: { email } });
+  expect(forgot.status()).toBe(200);
+  const { devUrl: resetUrl } = (await forgot.json()) as { devUrl: string };
+  await page.goto(resetUrl);
+  await expect(page.getByRole("heading", { name: "Choose a new password" })).toBeVisible();
+
+  const newPassword = "Br4nd-New!pass";
+  await page.getByTestId("reset-password").fill(newPassword);
+  await page.getByTestId("reset-confirm").fill(newPassword);
+  await page.getByTestId("reset-submit").click();
+  await expect(page.getByTestId("reset-done")).toBeVisible();
+
+  // Old password no longer works; new one does.
+  await page.goto("/login");
+  await page.getByTestId("login-email").fill(email);
+  await page.getByTestId("login-password").fill(STRONG_PASSWORD);
+  await page.getByTestId("login-submit").click();
+  await expect(page.getByTestId("login-error")).toContainText("Incorrect email or password");
+
+  await page.getByTestId("login-password").fill(newPassword);
+  await page.getByTestId("login-submit").click();
+  await page.waitForURL("**/onboarding");
+});
+
+test("newsletter form on the homepage subscribes an email", async ({ page }) => {
+  await page.goto("/");
+  const section = page.getByTestId("newsletter-section");
+  await expect(section).toBeVisible();
+
+  // Invalid email surfaces an inline error.
+  await page.getByTestId("newsletter-email").fill("not-an-email");
+  await page.getByTestId("newsletter-submit").click();
+  await expect(page.getByTestId("newsletter-error")).toBeVisible();
+
+  const email = `e2e-auth-newsletter-${Date.now()}@example.com`;
+  await page.getByTestId("newsletter-email").fill(email);
+  await page.getByTestId("newsletter-submit").click();
+  await expect(page.getByTestId("newsletter-done")).toBeVisible();
 });

@@ -1,31 +1,67 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import styles from "@/components/auth/auth.module.css";
 
-type ErrorKey = "invalid" | "used" | "expired" | "rate_limited" | "invalid_email";
+type Method = "password" | "magic";
 
-const errorMessages: Record<ErrorKey, string> = {
-  invalid: "This sign-in link is invalid. Please request a new one.",
-  used: "This sign-in link has already been used. Please request a new one.",
-  expired: "This sign-in link has expired. Please request a new one.",
+type QueryError = "invalid" | "used" | "expired" | "rate_limited";
+
+const queryErrorMessages: Record<QueryError, string> = {
+  invalid: "This link is invalid. Please request a new one.",
+  used: "This link has already been used. Please request a new one.",
+  expired: "This link has expired. Please request a new one.",
   rate_limited: "Too many requests. Please wait a minute and try again.",
+};
+
+const API_ERROR_MESSAGES: Record<string, string> = {
+  invalid_credentials: "Incorrect email or password.",
+  email_not_verified: "Your email isn't verified yet. Check your inbox for the verification link.",
+  rate_limited: "Too many attempts. Please wait a few minutes and try again.",
   invalid_email: "Please enter a valid email address.",
 };
 
 export default function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [method, setMethod] = useState<Method>("password");
+
+  // Password mode.
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
 
-  const queryError =
-    typeof window !== "undefined"
-      ? (new URLSearchParams(window.location.search).get("error") as ErrorKey | null)
-      : null;
+  const queryError = searchParams.get("error") as QueryError | null;
+  const next = searchParams.get("next");
 
-  async function handleSubmit(e: FormEvent) {
+  async function handlePasswordSubmit(e: FormEvent) {
     e.preventDefault();
+    if (status === "sending") return;
+    setStatus("sending");
+    setError(null);
+
+    const res = await fetch("/api/auth/signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, next }),
+    });
+    const data = (await res.json().catch(() => ({}))) as { error?: string; next?: string };
+
+    if (res.ok) {
+      router.push(data.next ?? "/settings");
+      router.refresh();
+      return;
+    }
+    setStatus("error");
+    setError(API_ERROR_MESSAGES[data.error ?? ""] ?? "Something went wrong. Please try again.");
+  }
+
+  async function handleMagicSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (status === "sending") return;
     setStatus("sending");
     setError(null);
 
@@ -34,55 +70,157 @@ export default function LoginForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
+    const data = (await res.json().catch(() => ({}))) as { error?: string };
 
     if (res.ok) {
       setStatus("sent");
       return;
     }
-
-    const data = (await res.json().catch(() => ({}))) as { error?: string };
     setStatus("error");
-    setError(errorMessages[(data.error as ErrorKey) ?? "invalid_email"] ?? "Something went wrong.");
+    setError(API_ERROR_MESSAGES[data.error ?? ""] ?? "Something went wrong. Please try again.");
   }
 
   if (status === "sent") {
     return (
-      <div>
-        <h1>Check your email</h1>
-        <p>
-          We sent a sign-in link to <strong>{email}</strong>. It expires in 15 minutes and can only
-          be used once.
+      <div className={styles.success} data-testid="login-sent">
+        <h2 className={styles.successTitle}>Check your email</h2>
+        <p className={styles.successBody}>
+          We sent a {method === "magic" ? "sign-in link" : "link"} to <strong>{email}</strong>.{" "}
+          {method === "magic"
+            ? "It expires in 15 minutes and can only be used once."
+            : "Use the link in your inbox."}
         </p>
-        <button onClick={() => setStatus("idle")}>Use a different email</button>
+        <button type="button" className={styles.link} onClick={() => setStatus("idle")}>
+          Use a different email
+        </button>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1>Sign in to NamesRanker</h1>
-      <p>Enter your email and we&apos;ll send you a magic link.</p>
+    <>
+      {queryError ? (
+        <p className={styles.error} role="alert" data-testid="login-query-error">
+          {queryErrorMessages[queryError]}
+        </p>
+      ) : null}
+      {error ? (
+        <p className={styles.error} role="alert" data-testid="login-error">
+          {error}
+        </p>
+      ) : null}
 
-      {queryError ? <p role="alert">{errorMessages[queryError]}</p> : null}
-      {error ? <p role="alert">{error}</p> : null}
+      <div className={styles.tabs} role="tablist" aria-label="Sign in method">
+        {(
+          [
+            ["password", "Password"],
+            ["magic", "Magic link"],
+          ] as [Method, string][]
+        ).map(([m, label]) => (
+          <button
+            key={m}
+            type="button"
+            role="tab"
+            aria-selected={method === m}
+            className={`${styles.tab} ${method === m ? styles.tabActive : ""}`}
+            data-testid={`login-method-${m}`}
+            onClick={() => setMethod(m)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="you@example.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <button type="submit" disabled={status === "sending"}>
-          {status === "sending" ? "Sending…" : "Send sign-in link"}
-        </button>
-      </form>
+      {method === "password" ? (
+        <form
+          className={styles.form}
+          onSubmit={handlePasswordSubmit}
+          data-testid="login-password-form"
+          noValidate
+        >
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="login-email">
+              Email
+            </label>
+            <input
+              id="login-email"
+              className={styles.input}
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              data-testid="login-email"
+              required
+            />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="login-password">
+              Password
+            </label>
+            <input
+              id="login-password"
+              className={styles.input}
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              data-testid="login-password"
+              required
+            />
+            <Link href="/forgot-password" className={styles.link}>
+              Forgot your password?
+            </Link>
+          </div>
+          <button
+            type="submit"
+            className={styles.submit}
+            data-testid="login-submit"
+            disabled={status === "sending"}
+          >
+            {status === "sending" ? "Signing in…" : "Sign in"}
+          </button>
+        </form>
+      ) : (
+        <form
+          className={styles.form}
+          onSubmit={handleMagicSubmit}
+          data-testid="login-magic-form"
+          noValidate
+        >
+          <div className={styles.field}>
+            <label className={styles.label} htmlFor="login-magic-email">
+              Email
+            </label>
+            <input
+              id="login-magic-email"
+              className={styles.input}
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              data-testid="login-magic-email"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className={styles.submit}
+            data-testid="login-magic-submit"
+            disabled={status === "sending"}
+          >
+            {status === "sending" ? "Sending…" : "Send sign-in link"}
+          </button>
+        </form>
+      )}
 
-      <p>
-        <button onClick={() => router.push("/")}>Back to home</button>
-      </p>
-    </div>
+      <div className={styles.footer}>
+        <p className={styles.footerText}>
+          New here?{" "}
+          <Link href="/signup" className={styles.link} data-testid="login-to-signup">
+            Create an account
+          </Link>
+        </p>
+      </div>
+    </>
   );
 }

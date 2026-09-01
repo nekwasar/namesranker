@@ -22,10 +22,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "paths_required" }, { status: 400 });
   }
 
+  // User pages live under the `[...path]` catch-all, so revalidate the route
+  // itself (per-path tags are never emitted by dynamic routes). Keep the
+  // given paths as page-level no-ops for safety, and refresh home + sitemap.
   for (const p of paths) {
     revalidatePath(`/${p}`, "page");
-    revalidatePath("/", "layout");
   }
+  revalidatePath("/[...path]", "page");
+  revalidatePath("/", "page");
 
   return NextResponse.json({ revalidated: true });
 }
