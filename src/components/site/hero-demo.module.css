@@ -91,6 +91,42 @@
   margin-bottom: 10px;
 }
 
+.agent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  padding: 11px 14px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.agentDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--foreground);
+}
+
+.agentText {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.agentText strong {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+.agentText em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  color: var(--foreground);
+}
+
 .result {
   padding: 12px 0;
   border-top: 1px solid var(--hairline);

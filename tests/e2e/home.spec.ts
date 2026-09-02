@@ -4,10 +4,8 @@ test("landing page renders all sections and CTAs route to onboarding", async ({ 
   await page.goto("/");
 
   // Hero
-  await expect(page).toHaveTitle(/Own the #1 result for your name/i);
-  await expect(
-    page.getByRole("heading", { name: /Own the #1 result for your name/i })
-  ).toBeVisible();
+  await expect(page).toHaveTitle(/Your name, ranked for you/i);
+  await expect(page.getByRole("heading", { name: /Your name, ranked for you/i })).toBeVisible();
 
   // Scarcity strip
   await expect(page.getByText(/names still available today/i)).toBeVisible();

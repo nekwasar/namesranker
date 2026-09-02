@@ -11,15 +11,15 @@ import FAQ from "@/components/site/faq";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "NamesRanker — Own the #1 result for your name",
+  title: "NamesRanker — Your name, ranked for you",
   description:
-    "Your personal AI agent ranks your name on Google: it studies you from your resume, publishes your works across the web, pitches you to podcasts & publications, and tracks your rank. $1 for 7 full days.",
+    "A personal AI agent ranks your name on Google: it studies you from your resume, publishes your works across the web, pitches you to podcasts & publications, and tracks your rank. $1 for 7 full days.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "NamesRanker — Own the #1 result for your name",
-    description: "Your personal AI agent ranks your name on Google. $1 for 7 full days.",
+    title: "NamesRanker — Your name, ranked for you",
+    description: "A personal AI agent ranks your name on Google. $1 for 7 full days.",
     url: "https://namesranker.com",
     siteName: "NamesRanker",
     type: "website",

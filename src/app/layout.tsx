@@ -23,7 +23,7 @@ const notoSerif = Noto_Serif({
 export const metadata: Metadata = {
   metadataBase: new URL("https://namesranker.com"),
   title: {
-    default: "NamesRanker — Own the #1 result for your name",
+    default: "NamesRanker — Your name, ranked for you",
     template: "%s",
   },
   description:

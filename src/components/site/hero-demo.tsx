@@ -31,26 +31,29 @@ export function HeroSection() {
   return (
     <div className={pageStyles.heroInner}>
       <div className={pageStyles.heroCopy}>
+        <span className={pageStyles.eyebrow}>
+          <span className={pageStyles.liveDot} /> Your personal ranking agent
+        </span>
         <h1 className={pageStyles.heroTitle}>
-          Own the <em>#1 result</em> for your name.
+          Your name, <em>ranked for you</em>.
         </h1>
         <p className={pageStyles.heroSub}>
-          NamesRanker gives you a personal AI agent that studies you from your resume, publishes
-          your works across the web, and pitches you to podcasts and publications — until the top
-          Google result for your name is you. You approve; it does the work.
+          NamesRanker gives you a personal AI agent. Upload your resume, and it studies who you are,
+          publishes your work across the web, and pitches you to podcasts and publications — then
+          tracks your name on Google until you own the #1 result. You approve; it does the work.
         </p>
 
         <div className={pageStyles.heroCta}>
           <Link href="/onboarding" className={pageStyles.ctaPrimary}>
-            Claim your name — $1 for 7 days
+            Start your $1 trial
           </Link>
           <Link href="#how-it-works" className={pageStyles.ctaSecondary}>
-            See how it works
+            Meet your agent
           </Link>
         </div>
         <div className={pageStyles.trust}>
-          <span>Your personal AI agent</span>
-          <span>$1 for 7 full days</span>
+          <span>Resume in, agent on the job</span>
+          <span>7 full days for $1</span>
           <span>Cancel anytime</span>
         </div>
       </div>
@@ -100,6 +103,14 @@ export default function HeroDemo() {
           <p className={styles.count} aria-hidden="true">
             About 11,400 results
           </p>
+          {/* The agent at work */}
+          <div className={styles.agent}>
+            <span className={styles.agentDot} aria-hidden="true" />
+            <span className={styles.agentText}>
+              <strong>{titleFor(name)}&apos;s agent</strong> — published 2 works · pitched 3
+              podcasts · <em>“{titleFor(name)}”</em> #23 → #3 this month
+            </span>
+          </div>
           {/* #1 — the NamesRanker page */}
           <div className={`${styles.result} ${styles.top}`}>
             <div className={styles.resultMeta}>

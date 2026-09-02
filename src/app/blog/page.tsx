@@ -6,7 +6,7 @@ import { blogPosts } from "@/lib/blog";
 export const metadata = {
   title: "Blog — NamesRanker",
   description:
-    "Product news, SEO insights, and guides from NamesRanker — everything about owning the #1 result for your name.",
+    "Product news, SEO insights, and guides from NamesRanker — everything about getting your name ranked on Google.",
 };
 
 export default function BlogPage() {
