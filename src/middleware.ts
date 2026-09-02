@@ -3,6 +3,10 @@ import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session";
 
 const PROTECTED_PREFIXES = ["/settings", "/onboarding", "/admin"];
 
+// Canonical origin for auth redirects — never req.nextUrl.origin, which can
+// resolve to the container's internal 0.0.0.0:3000 behind a reverse proxy.
+const APP_ORIGIN = process.env.NEXTAUTH_URL ?? "https://namesranker.com";
+
 const BASE_HOSTS = new Set(["namesranker.com", "ra-nk.me", "ra-nk.co", "localhost", "127.0.0.1"]);
 
 /** A bare IP literal (IPv4, or IPv6 containing colons) is a direct host, never a custom domain. */
@@ -47,7 +51,7 @@ export async function middleware(req: NextRequest) {
   const session = token ? await verifySessionToken(token) : null;
 
   if (!session) {
-    const loginUrl = new URL("/login", req.nextUrl.origin);
+    const loginUrl = new URL("/login", APP_ORIGIN);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }

@@ -18,7 +18,9 @@ export async function GET(req: NextRequest) {
 
   const result = await consumeAuthToken(rawToken, TOKEN_PURPOSES.EMAIL_VERIFY);
   if (!result.ok) {
-    return NextResponse.redirect(new URL(`/login?error=${result.error}`, req.nextUrl.origin));
+    // Redirect to the canonical app URL, never the request-derived origin (in
+    // the container the internal 0.0.0.0:3000 leaks into req.nextUrl.origin).
+    return NextResponse.redirect(new URL(`/login?error=${result.error}`, config.appUrl));
   }
 
   const isAdmin = config.adminEmails.includes(result.email.toLowerCase());
@@ -31,5 +33,5 @@ export async function GET(req: NextRequest) {
   await setSessionCookie({ sub: user.id, email: user.email, plan: user.plan });
 
   const fallback = user.onboardedAt ? "/settings" : "/onboarding";
-  return NextResponse.redirect(safeRedirectUrl(next, req.nextUrl.origin, fallback));
+  return NextResponse.redirect(safeRedirectUrl(next, config.appUrl, fallback));
 }

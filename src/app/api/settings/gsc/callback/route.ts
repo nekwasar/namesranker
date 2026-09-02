@@ -4,8 +4,13 @@ import { getSession } from "@/lib/auth/session";
 import { exchangeCodeForTokens } from "@/lib/gsc/google";
 import { saveLink } from "@/lib/gsc/links";
 import { GSC_STATE_COOKIE } from "@/lib/gsc/constants";
+import { config } from "@/lib/config";
 
 export const runtime = "nodejs";
+
+// Redirect to the canonical app URL, never req.nextUrl.origin (the container's
+// internal 0.0.0.0:3000 must not leak into browsers).
+const redirect = (path: string) => NextResponse.redirect(new URL(path, config.appUrl));
 
 /**
  * OAuth redirect target (registered in the Google Cloud console as
@@ -24,33 +29,33 @@ export async function GET(req: NextRequest) {
   // A callback without our state cookie means it wasn't initiated here.
   const session = await getSession();
   if (!session) {
-    return NextResponse.redirect(new URL("/login?callbackUrl=%2Fsettings", req.nextUrl.origin));
+    return redirect("/login?callbackUrl=%2Fsettings");
   }
   if (!raw) {
-    return NextResponse.redirect(new URL("/settings?gsc=error", req.nextUrl.origin));
+    return redirect("/settings?gsc=error");
   }
 
   let stateData: { state: string; pageId: string; userId: string };
   try {
     stateData = JSON.parse(raw) as { state: string; pageId: string; userId: string };
   } catch {
-    return NextResponse.redirect(new URL("/settings?gsc=error", req.nextUrl.origin));
+    return redirect("/settings?gsc=error");
   }
 
   if (!state || state !== stateData.state || stateData.userId !== session.sub) {
-    return NextResponse.redirect(new URL("/settings?gsc=error", req.nextUrl.origin));
+    return redirect("/settings?gsc=error");
   }
   if (error) {
-    return NextResponse.redirect(new URL("/settings?gsc=denied", req.nextUrl.origin));
+    return redirect("/settings?gsc=denied");
   }
   if (!code) {
-    return NextResponse.redirect(new URL("/settings?gsc=error", req.nextUrl.origin));
+    return redirect("/settings?gsc=error");
   }
 
   try {
     const tokens = await exchangeCodeForTokens(code);
     if (!tokens.refresh_token) {
-      return NextResponse.redirect(new URL("/settings?gsc=no_refresh", req.nextUrl.origin));
+      return redirect("/settings?gsc=no_refresh");
     }
     // propertyUrl is derived from the claimed slug — the property the user must
     // have verified in Search Console. Kept simple here; actual property is
@@ -61,8 +66,8 @@ export async function GET(req: NextRequest) {
       propertyUrl: `sc-domain:${process.env.BASE_DOMAIN ?? "namesranker.com"}`,
       refreshToken: tokens.refresh_token,
     });
-    return NextResponse.redirect(new URL("/settings?gsc=connected", req.nextUrl.origin));
+    return redirect("/settings?gsc=connected");
   } catch {
-    return NextResponse.redirect(new URL("/settings?gsc=error", req.nextUrl.origin));
+    return redirect("/settings?gsc=error");
   }
 }

@@ -16,8 +16,10 @@ export async function GET(req: NextRequest) {
   const rawToken = req.nextUrl.searchParams.get("token");
   const next = req.nextUrl.searchParams.get("next") ?? "/settings";
 
+  // Redirects always use the canonical config.appUrl, never the request-derived
+  // origin (the container's internal 0.0.0.0:3000 must not leak into links).
   if (!rawToken) {
-    return NextResponse.redirect(new URL("/login?error=invalid", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/login?error=invalid", config.appUrl));
   }
 
   const tokenHash = hashToken(rawToken);
@@ -26,15 +28,15 @@ export async function GET(req: NextRequest) {
   });
 
   if (!record) {
-    return NextResponse.redirect(new URL("/login?error=invalid", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/login?error=invalid", config.appUrl));
   }
 
   if (record.usedAt) {
-    return NextResponse.redirect(new URL("/login?error=used", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/login?error=used", config.appUrl));
   }
 
   if (isTokenExpired(record.expiresAt)) {
-    return NextResponse.redirect(new URL("/login?error=expired", req.nextUrl.origin));
+    return NextResponse.redirect(new URL("/login?error=expired", config.appUrl));
   }
 
   // Single-use: mark consumed before signing in (protects against replay even
@@ -57,5 +59,5 @@ export async function GET(req: NextRequest) {
     plan: user.plan,
   });
 
-  return NextResponse.redirect(safeRedirectUrl(next, req.nextUrl.origin, "/settings"));
+  return NextResponse.redirect(safeRedirectUrl(next, config.appUrl, "/settings"));
 }
