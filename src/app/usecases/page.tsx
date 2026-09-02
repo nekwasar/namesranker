@@ -35,7 +35,8 @@ export default function UseCasesPage() {
       <div className={styles.page}>
         <h1 className={styles.title}>Use cases</h1>
         <p className={styles.subtitle}>
-          Anyone who&apos;s ever Googled their own name — and wished the top result were theirs.
+          Anyone whose name gets searched — and who wants a personal agent ranking it. $1 for 7 full
+          days, then $9/month.
         </p>
         <hr className={styles.rule} />
 
@@ -62,9 +63,10 @@ export default function UseCasesPage() {
 
         <div className={styles.cta}>
           <div>
-            <h2 className={styles.ctaTitle}>Your name is searchable. Make it yours.</h2>
+            <h2 className={styles.ctaTitle}>Your name is being searched right now.</h2>
             <p className={styles.ctaSub}>
-              Claim your name today and control the #1 result on Google — before someone else does.
+              Put a personal agent on it — it studies you, publishes your work, and tracks you to
+              #1.
             </p>
           </div>
           <Link href="/onboarding" className={styles.ctaLink}>

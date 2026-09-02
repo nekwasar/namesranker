@@ -21,6 +21,15 @@ export interface ChangelogEntry {
 
 export const changelogEntries: ChangelogEntry[] = [
   {
+    version: "v2.0",
+    date: "2026-09-02",
+    tag: "Feature",
+    title: "Meet your personal ranking agent",
+    description:
+      "NamesRanker is now a premium-only ranking engine: upload your resume and your personal agent studies you, publishes your works across the web, pitches you to podcasts and publications, and tracks your name on Google until it ranks. $1 for 7 full days, then $9/month launch pricing.",
+    relatedPostSlug: "meet-your-personal-ranking-agent",
+  },
+  {
     version: "v1.4",
     date: "2026-08-25",
     tag: "Feature",
@@ -42,9 +51,9 @@ export const changelogEntries: ChangelogEntry[] = [
     version: "v1.2",
     date: "2026-08-12",
     tag: "Feature",
-    title: "Name protection for Premium",
+    title: "Name protection, included in your plan",
     description:
-      "One-word slugs stay exclusively yours while you're subscribed — enforced at the database level, no workarounds.",
+      "One-word slugs stay exclusively yours while you're a member — enforced at the database level, no workarounds.",
     relatedPostSlug: "name-protection-included",
   },
   {

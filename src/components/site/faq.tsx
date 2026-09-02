@@ -4,24 +4,24 @@ import styles from "./faq.module.css";
 
 const faqs = [
   {
-    q: "Is my name really guaranteed to rank #1?",
-    a: "NamesRanker builds an SEO-engineered page (clean semantic markup, fast ISR rendering, structured data, and careful internal linking) that we ladder up Google over time. Most single-name pages reach the first page within weeks; #1 is our target, not a contract. Two-word names are the easiest to rank — which is why those are free.",
+    q: "How does NamesRanker actually rank my name?",
+    a: "You upload your resume and your personal agent takes over: it studies who you are, builds a consistent identity web across the platforms that matter for your profession, publishes your works (transformed per platform, never duplicated), pitches you to podcasts and publications, and tracks your rank on Google — reporting back in chat, week after week.",
+  },
+  {
+    q: "Do I have to do the work myself?",
+    a: "No — that's the point. The agent does the studying, publishing, pitching, and tracking. Your job is about ten minutes a week: approve batches, answer quick questions, and watch the report card. Some actions need you (like pasting a post on LinkedIn, where platforms don't allow agents) — the agent prepares everything so it takes thirty seconds.",
   },
   {
     q: "What does it cost?",
-    a: "Two-word names are free — claim yours and build your page at no cost. One-word names (think ‘Beyoncé’ or ‘Google’) and premium features like name protection, monitoring, unlimited sub-pages, and a custom domain are part of Premium.",
+    a: "$1 unlocks seven full days of everything — no limits. On day eight it auto-converts to the launch rate of $9/month (standard $29/month after launch). Cancel anytime during the trial and your $1 is refunded. There's no free plan, because a free tier couldn't honestly run an engine that ranks your name.",
   },
   {
-    q: "Why does claiming a name matter?",
-    a: "There are limited clean, short slugs available, and we allocate them first-come, first-served. If someone else claims yourname and ranks it first, the search result for your name is theirs. Claim yours to control the #1 result.",
+    q: "Is my name really guaranteed to rank #1?",
+    a: "No one can honestly guarantee a #1 ranking — but we run the full mechanism continuously: an SEO-engineered page, a consistent identity across the web, real published work, third-party placements, and live rank tracking. Most names reach the first page within weeks, and the engine keeps working until you're there.",
   },
   {
-    q: "Can I bring my own domain?",
-    a: "Yes. Premium unlocks a custom domain (including a short-branded vanity domain) so your page lives at a URL you fully own and control.",
-  },
-  {
-    q: "How is my page published and updated?",
-    a: "Your page is served statically for speed and SEO, and every edit you make revalidates it instantly. Changes to your content, links, and SEO settings appear on the live page immediately.",
+    q: "Do I need to create accounts on other platforms first?",
+    a: "No. Your agent discovers the profiles you already have by studying your resume. Where a valuable profile is missing, it drafts everything from your resume and you complete the signup in about ninety seconds. We never create accounts for you.",
   },
 ];
 

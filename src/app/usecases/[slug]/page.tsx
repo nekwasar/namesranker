@@ -106,7 +106,7 @@ export default function UseCasePage({ params }: { params: { slug: string } }) {
         </section>
 
         <div className={styles.cta}>
-          <h2 className={styles.ctaTitle}>Start with your name.</h2>
+          <h2 className={styles.ctaTitle}>Start with your name — $1 for 7 full days.</h2>
           <Link href="/onboarding" className={styles.ctaButton}>
             Claim your name
           </Link>
