@@ -1,7 +1,11 @@
 import { withSentryConfig } from "@sentry/nextjs";
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  // Self-hosted production image: emit the standalone server so the Docker
+  // runner layer carries only traced dependencies (see Dockerfile).
+  output: "standalone",
+};
 
 export default withSentryConfig(nextConfig, {
   org: process.env.SENTRY_ORG,

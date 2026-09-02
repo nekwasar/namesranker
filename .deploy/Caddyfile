@@ -1,0 +1,37 @@
+{$DOMAIN}, www.{$DOMAIN} {
+	encode gzip zstd
+
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Strict-Transport-Security "max-age=15552000; includeSubDomains"
+	}
+
+	@assets path /_next/static/* /static/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	header Cache-Control "no-store"
+
+	reverse_proxy app:3000
+}
+
+namesranker.com, www.namesranker.com {
+	encode gzip zstd
+
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Strict-Transport-Security "max-age=15552000; includeSubDomains"
+	}
+
+	@assets path /_next/static/* /static/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	header Cache-Control "no-store"
+
+	reverse_proxy namesranker-app:3000
+}

@@ -31,6 +31,10 @@ yarn-error.log*
 # local env files
 .env
 .env*.local
+# production credential files (never committed; feed the Docker container)
+.env.production
+.env.docker
+/env.production
 
 # editor / agent tooling
 .agents/

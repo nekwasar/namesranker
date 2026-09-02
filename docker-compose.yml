@@ -17,17 +17,42 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
-    image: redis:7-alpine
-    container_name: namesranker-redis
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Image tag produced by the build step (see README/comments in Dockerfile).
+    image: namesranker-app:latest
+    container_name: namesranker-app
     restart: unless-stopped
-    ports:
-      - "6379:6379"
+    # Production values come from the gitignored .env.production (no E2E/dev flags).
+    env_file:
+      - .env.production
+    expose:
+      - "3000"
+    volumes:
+      # Persistent user uploads (avatars, imported media) on the host, kept out
+      # of the image so container rebuilds never wipe uploaded files.
+      - ./uploads:/app/uploads
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/robots.txt >/dev/null 2>&1 || exit 1"]
+      interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 15s
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - default
+      # The shared Caddy reverse proxy (agentsdb-prod project) owns host ports
+      # 80/443; joining its network lets it reach us as `namesranker-app:3000`.
+      - caddy
+
+networks:
+  caddy:
+    external: true
+    name: agentsdb-prod_default
 
 volumes:
   namesranker-pgdata:

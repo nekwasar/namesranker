@@ -1,0 +1,36 @@
+# secrets – never ship credentials into the image build context
+.env
+.env*.local
+.env.*.production
+.env.production
+
+# local state
+node_modules
+.next
+out
+uploads
+coverage
+test-results
+playwright-report
+blob-report
+tsconfig.tsbuildinfo
+
+# generated at build time inside the image
+src/generated/prisma
+
+# vcs / editor / agent tooling
+.git
+.gitignore
+.github
+.agents
+.claude
+.windsurf
+.vercel
+.DS_Store
+
+# docs & tests not needed in the image
+README.md
+milestones.md
+product-spec.md
+tests
+scripts
