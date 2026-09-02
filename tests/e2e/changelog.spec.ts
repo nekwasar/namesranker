@@ -7,7 +7,7 @@ test("changelog renders entries with tags and related post links", async ({ page
   expect(await entries.count()).toBeGreaterThan(5);
 
   // Newest entry first, with a Feature tag.
-  await expect(entries.first()).toContainText("v1.4");
+  await expect(entries.first()).toContainText("v2.0");
   await expect(entries.first()).toContainText("Feature");
 
   // Tags render across entries.

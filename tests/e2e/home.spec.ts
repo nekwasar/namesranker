@@ -23,7 +23,8 @@ test("landing page renders all sections and CTAs route to onboarding", async ({ 
 
   // Pricing
   await expect(page.getByRole("heading", { name: /Simple pricing/i })).toBeVisible();
-  await expect(page.getByText("$30/mo")).toBeVisible();
+  await expect(page.getByText("$9/mo")).toBeVisible();
+  await expect(page.getByText(/Launch offer/)).toBeVisible();
 
   // CTAs route to onboarding
   const claimLinks = page.getByRole("link", { name: /Claim your name/i });
