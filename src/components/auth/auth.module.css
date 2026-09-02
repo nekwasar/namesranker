@@ -145,6 +145,25 @@
   cursor: default;
 }
 
+.submitLink {
+  align-self: flex-start;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  color: var(--surface);
+  background: var(--foreground);
+  border: 1px solid var(--foreground);
+  border-radius: 0.5rem;
+  padding: 0.6875rem 1.25rem;
+  transition: opacity 150ms ease;
+}
+
+.submitLink:hover {
+  opacity: 0.85;
+}
+
 .footer {
   width: 100%;
   margin-top: 1.75rem;

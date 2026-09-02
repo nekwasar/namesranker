@@ -86,11 +86,34 @@ test("unverified accounts cannot sign in with a password", async ({ page }) => {
   await expect(page.getByTestId("login-error")).toContainText("email isn't verified");
 });
 
-test("magic link method still sends a link", async ({ page }) => {
+test("magic link only emails existing accounts", async ({ page }) => {
+  const email = `e2e-auth-magic-${Date.now()}@example.com`;
+
   await page.goto("/login");
   await page.getByTestId("login-method-magic").click();
   await expect(page.getByTestId("login-magic-form")).toBeVisible();
-  await page.getByTestId("login-magic-email").fill(`e2e-auth-magic-${Date.now()}@example.com`);
+
+  // Unknown account → no email is sent; the UI offers signup instead.
+  await page.getByTestId("login-magic-email").fill(email);
+  await page.getByTestId("login-magic-submit").click();
+  await expect(page.getByTestId("login-no-account")).toBeVisible();
+  await expect(page.getByTestId("login-no-account-signup")).toHaveAttribute("href", "/signup");
+
+  // API confirms the same: 200 with needsAccount and no dev link minted.
+  const probe = await api.post("/api/auth/magic-link", { data: { email } });
+  expect(probe.status()).toBe(200);
+  const probeBody = (await probe.json()) as { needsAccount?: boolean; devUrl?: string };
+  expect(probeBody.needsAccount).toBe(true);
+  expect(probeBody.devUrl).toBeUndefined();
+
+  // Once the account exists, a link is actually sent.
+  const signup = await api.post("/api/auth/signup", {
+    data: { firstName: "Ada", lastName: "Lovelace", email, password: STRONG_PASSWORD },
+  });
+  expect(signup.status()).toBe(200);
+  await page.goto("/login");
+  await page.getByTestId("login-method-magic").click();
+  await page.getByTestId("login-magic-email").fill(email);
   await page.getByTestId("login-magic-submit").click();
   await expect(page.getByTestId("login-sent")).toBeVisible();
 });

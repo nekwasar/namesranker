@@ -31,7 +31,9 @@ export default function LoginForm() {
   // Password mode.
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "no-account" | "error">(
+    "idle"
+  );
   const [error, setError] = useState<string | null>(null);
 
   const queryError = searchParams.get("error") as QueryError | null;
@@ -70,14 +72,37 @@ export default function LoginForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
     });
-    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    const data = (await res.json().catch(() => ({}))) as {
+      error?: string;
+      needsAccount?: boolean;
+    };
 
     if (res.ok) {
-      setStatus("sent");
+      // The API only emails existing accounts; if none exists, tell the user
+      // (they typed their own address) instead of pretending we sent a link.
+      setStatus(data.needsAccount ? "no-account" : "sent");
       return;
     }
     setStatus("error");
     setError(API_ERROR_MESSAGES[data.error ?? ""] ?? "Something went wrong. Please try again.");
+  }
+
+  if (status === "no-account") {
+    return (
+      <div className={styles.success} data-testid="login-no-account">
+        <h2 className={styles.successTitle}>No account found</h2>
+        <p className={styles.successBody}>
+          There&rsquo;s no NamesRanker account for <strong>{email}</strong>. Create one to claim
+          your name — it takes under a minute.
+        </p>
+        <Link href="/signup" className={styles.submitLink} data-testid="login-no-account-signup">
+          Create an account
+        </Link>
+        <button type="button" className={styles.link} onClick={() => setStatus("idle")}>
+          Use a different email
+        </button>
+      </div>
+    );
   }
 
   if (status === "sent") {

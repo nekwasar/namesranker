@@ -31,12 +31,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "rate_limited", retryAfter: 60 }, { status: 429 });
   }
 
-  // Always create/upsert the user on request so tokens are tied to a real row.
-  const user = await prisma.user.upsert({
+  // Magic links are a sign-in flow for EXISTING accounts: look the user up in
+  // the DB and only send when the account actually exists. Never auto-create a
+  // user row here (signup requires a name + strong password + verification).
+  const user = await prisma.user.findUnique({
     where: { email },
-    update: {},
-    create: { email },
+    select: { onboardedAt: true },
   });
+
+  if (!user) {
+    // No account → never mint a token or send an email. The status stays 200
+    // (identical to a successful send) so the endpoint can't be used to probe
+    // which emails have accounts; the body flag lets the UI route people who
+    // typed their own address to signup instead of a phantom "we sent it".
+    return NextResponse.json({ ok: true, needsAccount: true }, { status: 200 });
+  }
+
+  const body: Record<string, unknown> = { ok: true };
 
   const rawToken = generateRawToken();
   const tokenHash = hashToken(rawToken);
@@ -55,10 +66,8 @@ export async function POST(req: NextRequest) {
 
   await sendEmail(magicLinkEmail(email, finalUrl.toString()));
 
-  // Anti-enumeration: identical response whether or not the email exists.
   // When E2E_MAGIC_LINK_DEV=1 (test server only), return the URL so e2e tests
   // can complete the flow. Never enabled in production.
-  const body: Record<string, unknown> = { ok: true };
   if (process.env.E2E_MAGIC_LINK_DEV === "1") {
     body.devUrl = finalUrl.toString();
   }

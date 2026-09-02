@@ -15,6 +15,11 @@ test.afterAll(async () => {
 });
 
 async function signIn(page: import("@playwright/test").Page, email: string, next = "/onboarding") {
+  // Magic links only go to existing accounts — create one first.
+  const signup = await api.post("/api/auth/signup", {
+    data: { firstName: "Ada", lastName: "Lovelace", email, password: "Sup3r-secret!" },
+  });
+  expect(signup.status()).toBe(200);
   const res = await api.post("/api/auth/magic-link", { data: { email } });
   expect(res.status()).toBe(200);
   const { devUrl } = (await res.json()) as { devUrl: string };
