@@ -13,13 +13,13 @@ export const revalidate = 60;
 export const metadata = {
   title: "NamesRanker — Own the #1 result for your name",
   description:
-    "Searchable, SEO-engineered pages that rank your name first on Google. Claim your name before someone else does. Free for two-word names.",
+    "Your personal AI agent ranks your name on Google: it studies you from your resume, publishes your works across the web, pitches you to podcasts & publications, and tracks your rank. $1 for 7 full days.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "NamesRanker — Own the #1 result for your name",
-    description: "Searchable, SEO-engineered pages that rank your name first on Google.",
+    description: "Your personal AI agent ranks your name on Google. $1 for 7 full days.",
     url: "https://namesranker.com",
     siteName: "NamesRanker",
     type: "website",
@@ -31,33 +31,34 @@ const organizationJsonLd = {
   "@type": "Organization",
   name: "NamesRanker",
   url: "https://namesranker.com",
-  description: "Searchable, SEO-engineered pages that rank your name first on Google.",
+  description:
+    "NamesRanker ranks your name on Google with a personal AI agent — studying, publishing, pitching, and tracking until you own the #1 result.",
 };
 
 const features = [
   {
-    title: "Engineered to rank #1",
-    body: "Clean semantic markup, fast ISR pages, and structured data tuned for personal-name queries.",
+    title: "Your personal agent",
+    body: "Upload your resume and your agent takes over — it studies who you are and runs the whole ranking operation, reporting back in chat.",
   },
   {
-    title: "Claim your exact name",
-    body: "Short, clean URL slugs allocated first-come, first-served. Two-word names are free.",
+    title: "Studied, not filled in",
+    body: "No forms to grind through. Your resume becomes your footprint: your works, skills, and the queries people actually search to find you.",
   },
   {
-    title: "Build from one dashboard",
-    body: "Bio, work, projects, testimonials, links and content — published and updated in minutes.",
+    title: "Published for you",
+    body: "Your agent transforms and syndicates your works across the platforms that matter for your profession — with your approval, never duplicated.",
   },
   {
-    title: "Keyword variants",
-    body: "Profession-tuned URL variants let you rank for both your name and what you do.",
+    title: "Pitched for you",
+    body: "Podcasts, guest posts, directories, journalists — your agent finds the opportunities, drafts the pitch, and sends it on your behalf.",
   },
   {
-    title: "Name monitoring",
-    body: "Watch your top result and related competitor pages, with alerts on changes. (Premium)",
+    title: "Rank tracking with proof",
+    body: "Watch your name move on Google — baseline on day one, movement alerts as you climb, and a weekly report card in your chat.",
   },
   {
-    title: "Protection from copycats",
-    body: "We claim what's yours so impersonators and squatters can't take your search result. (Premium)",
+    title: "Nothing to babysit",
+    body: "Ten minutes a week: approve batches, answer quick questions, watch the line move. The engine works while you sleep.",
   },
 ];
 
@@ -144,18 +145,26 @@ export default async function Home() {
           <ol className={styles.steps}>
             <li className={styles.step}>
               <span className={styles.stepNum}>01</span>
-              <h3>Claim your name</h3>
-              <p>Enter your name and grab your unique URL before someone else does.</p>
+              <h3>Meet your agent</h3>
+              <p>
+                Upload your resume — your personal agent studies it overnight and brings you a plan.
+              </p>
             </li>
             <li className={styles.step}>
               <span className={styles.stepNum}>02</span>
-              <h3>Build your world</h3>
-              <p>Add your bio, work, portfolio, links, and content in minutes.</p>
+              <h3>It builds your footprint</h3>
+              <p>
+                Your agent publishes your works, keeps your identity consistent across the web, and
+                pitches you — all with your one-tap approval.
+              </p>
             </li>
             <li className={styles.step}>
               <span className={styles.stepNum}>03</span>
-              <h3>Rank on Google</h3>
-              <p>Your SEO-engineered page works 24/7 to become the top result for your name.</p>
+              <h3>Watch yourself rank</h3>
+              <p>
+                Rank tracking, movement alerts, and a weekly report card — until the #1 result for
+                your name is you.
+              </p>
             </li>
           </ol>
         </div>
@@ -256,40 +265,27 @@ export default async function Home() {
       <section className={styles.section} id="pricing">
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Simple pricing</h2>
-          <div className={styles.priceGrid}>
+          <div
+            className={styles.priceGrid}
+            style={{ gridTemplateColumns: "repeat(1, minmax(0, 1fr))", maxWidth: 560 }}
+          >
             <div className={`${styles.priceCard} ${styles.priceFeatureLevel}`}>
-              <p className={styles.priceFeature}>Free</p>
-            </div>
-            <div className={styles.priceCard}>
-              <h3 className={styles.priceName}>Free</h3>
-              <p className={styles.price}>$0</p>
-              <p className={styles.priceAlt}>forever · no credit card</p>
+              <p className={styles.priceFeature}>Launch offer · $1 for 7 full days</p>
+              <h3 className={styles.priceName}>Everything, no limits</h3>
+              <p className={styles.price}>$9/mo</p>
+              <p className={styles.priceAlt}>
+                from day 8 · launch pricing · <s>$29/mo</s> after launch
+              </p>
               <ul className={styles.priceList}>
-                <li>Your hub page</li>
-                <li>Two-word name slug</li>
-                <li>Core content sections</li>
-                <li>Fast, indexed publishing</li>
+                <li>Your personal ranking agent</li>
+                <li>Resume in — footprint built for you</li>
+                <li>Published & pitched across the web</li>
+                <li>Rank tracking with movement alerts</li>
+                <li>Cancel anytime — $1 refunded in-trial</li>
               </ul>
               <Link href="/onboarding" className={styles.ctaPrimary}>
-                Start free
+                Start your $1 trial
               </Link>
-            </div>
-            <div className={styles.priceCard}>
-              <h3 className={styles.priceName}>Premium</h3>
-              <p className={styles.price}>$30/mo</p>
-              <p className={styles.priceAlt}>or $299/yr · $1,399 lifetime</p>
-              <ul className={styles.priceList}>
-                <li>One-word name claim</li>
-                <li>Name protection + monitoring</li>
-                <li>Unlimited pages & sub-pages</li>
-                <li>Custom domain & deep SEO</li>
-              </ul>
-              <Link href="/pricing" className={styles.ctaPrimary}>
-                Go Premium
-              </Link>
-            </div>
-            <div className={`${styles.priceCard} ${styles.priceFeatureLevel}`}>
-              <p className={styles.priceFeature}>Most popular</p>
             </div>
           </div>
         </div>
@@ -306,9 +302,10 @@ export default async function Home() {
       {/* Final CTA */}
       <section className={styles.finalCta}>
         <div className={styles.container}>
-          <h2 className={styles.finalCtaTitle}>Your name is searchable. Make it yours.</h2>
+          <h2 className={styles.finalCtaTitle}>Your name is being searched right now.</h2>
           <p className={styles.finalCtaSub}>
-            Claim your name today and control the #1 result on Google — before someone else does.
+            Your personal agent will make sure the answer is you — $1 for seven full days, then
+            $9/month launch pricing.
           </p>
           <Link href="/onboarding" className={styles.ctaPrimary}>
             Claim your name

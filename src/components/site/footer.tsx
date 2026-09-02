@@ -8,7 +8,7 @@ const columns: { title: string; links: { href: string; label: string }[] }[] = [
       { href: "/onboarding", label: "Claim your name" },
       { href: "/names", label: "Name directory" },
       { href: "#how-it-works", label: "How it works" },
-      { href: "/pricing", label: "Premium" },
+      { href: "/pricing", label: "Pricing — $1 trial" },
     ],
   },
   {
@@ -39,10 +39,10 @@ export default function Footer() {
           <div className={styles.brand}>
             <span className={styles.wordmark}>NamesRanker</span>
             <p className={styles.tagline}>
-              The SEO-engineered page that ranks your name #1 on Google — before someone else claims
-              it.
+              A personal AI agent that studies you, publishes your works across the web, and tracks
+              your name on Google until it ranks #1.
             </p>
-            <p className={styles.mono}>namesranker.com/{`<your-name>`}</p>
+            <p className={styles.mono}>Your agent · $1 for 7 days · then $9/mo</p>
           </div>
 
           <div className={styles.columns}>

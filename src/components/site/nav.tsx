@@ -24,7 +24,7 @@ const resourceColumns: { title: string; items: { href: string; label: string; de
       items: [
         { href: "/faq", label: "FAQ", desc: "Common questions, answered" },
         { href: "/names", label: "Name directory", desc: "Browse claimed names" },
-        { href: "/pricing", label: "Premium", desc: "Features & pricing" },
+        { href: "/pricing", label: "Pricing — $1 trial", desc: "One plan, no limits" },
       ],
     },
   ];
@@ -140,14 +140,14 @@ export default function NavBar() {
                   <div className={styles.megaAside}>
                     <p className={styles.megaHeading}>Featured</p>
                     <p className={styles.asideText}>
-                      Claim your name and rank #1 on Google — before someone else does.
+                      A personal AI agent that ranks your name on Google — $1 for 7 full days.
                     </p>
                     <Link
                       href="/onboarding"
                       className={styles.asideCta}
                       onClick={() => setResourcesOpen(false)}
                     >
-                      Claim your name →
+                      Start your $1 trial →
                     </Link>
                   </div>
                 </div>

@@ -5,14 +5,14 @@ import SignupForm from "./signup-form";
 export const metadata: Metadata = {
   title: "Create your account — NamesRanker",
   description:
-    "Create your NamesRanker account with your name and a strong password, then verify your email to claim your name.",
+    "Create your NamesRanker account to start your $1 trial — verify your email, upload your resume, and your personal agent takes it from there.",
 };
 
 export default function SignupPage() {
   return (
     <AuthShell
       title="Create your account"
-      subtitle="Claim your name on Google — it takes two minutes, and your email must be verified before you sign in."
+      subtitle="Start your $1 trial — verify your email, upload your resume, and your personal agent will take it from there."
     >
       <SignupForm />
     </AuthShell>

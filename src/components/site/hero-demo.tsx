@@ -35,23 +35,23 @@ export function HeroSection() {
           Own the <em>#1 result</em> for your name.
         </h1>
         <p className={pageStyles.heroSub}>
-          NamesRanker builds you a searchable, SEO-engineered page so that when anyone Googles your
-          name, your page — with your picture, work, and world — is the top result. Before someone
-          else claims it.
+          NamesRanker gives you a personal AI agent that studies you from your resume, publishes
+          your works across the web, and pitches you to podcasts and publications — until the top
+          Google result for your name is you. You approve; it does the work.
         </p>
 
         <div className={pageStyles.heroCta}>
           <Link href="/onboarding" className={pageStyles.ctaPrimary}>
-            Claim your name — it&apos;s free
+            Claim your name — $1 for 7 days
           </Link>
           <Link href="#how-it-works" className={pageStyles.ctaSecondary}>
             See how it works
           </Link>
         </div>
         <div className={pageStyles.trust}>
-          <span>Free for two-word names</span>
-          <span>Instant setup</span>
-          <span>No credit card</span>
+          <span>Your personal AI agent</span>
+          <span>$1 for 7 full days</span>
+          <span>Cancel anytime</span>
         </div>
       </div>
 
@@ -114,10 +114,10 @@ export default function HeroDemo() {
               </span>
               <span className={styles.resultUrl}>namesranker.com/{slug}</span>
             </div>
-            <p className={styles.resultTitle}>{titleFor(name)} — Own your name</p>
+            <p className={styles.resultTitle}>{titleFor(name)} — the #1 result for your name</p>
             <p className={styles.resultSnippet}>
-              The searchable, professionally designed page for {titleFor(name)}. Bio, work, links,
-              and projects — engineered to rank first on Google.
+              The definitive page for {titleFor(name)} — profile, work, and publications, kept fresh
+              and ranked by a personal AI agent.
             </p>
           </div>
 
