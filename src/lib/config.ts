@@ -22,9 +22,24 @@ export const config = {
   stripe: {
     secretKey: env("STRIPE_SECRET_KEY"),
     webhookSecret: env("STRIPE_WEBHOOK_SECRET"),
+    // v1 legacy prices — retired at the M8 billing-v2 cutover.
     priceMonthly: env("STRIPE_PRICE_MONTHLY"),
     priceAnnual: env("STRIPE_PRICE_ANNUAL"),
     priceLifetime: env("STRIPE_PRICE_LIFETIME"),
+    // v2 revenue shape (product-plan-v2.md §7, milestones-v2.md M0/M8):
+    // $1 deposit invoice item → 7-day trial → auto-convert to the promo
+    // Price ($9) on day 8; after the promo window closes, new signups
+    // check out on the standard Price ($29). Price IDs are created by
+    // scripts/create-stripe-products.ts and set in the environment.
+    depositPrice: env("STRIPE_PRICE_DEPOSIT"),
+    pricePromo: env("STRIPE_PRICE_PROMO"),
+    priceStandard: env("STRIPE_PRICE_STANDARD"),
+  },
+  billing: {
+    /** Promo window open by default until the launch window closes (M8). */
+    promoPriceActive: env("PROMO_PRICE_ACTIVE") !== "0" && env("PROMO_PRICE_ACTIVE") !== "false",
+    /** 7 full days of trial power behind the $1 deposit (product-plan §7). */
+    trialDays: 7,
   },
   contact: {
     email: env("CONTACT_EMAIL", "hello@namesranker.com"),

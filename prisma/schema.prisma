@@ -60,26 +60,283 @@ enum ShowcaseStatus {
 }
 
 model User {
-  id                   String   @id @default(cuid())
-  email                String   @unique
+  id                   String    @id @default(cuid())
+  email                String    @unique
   firstName            String?
   lastName             String?
   passwordHash         String?
   emailVerifiedAt      DateTime?
-  plan                 Plan     @default(FREE)
-  stripeCustomerId     String?  @unique
-  stripeSubscriptionId String?  @unique
+  plan                 Plan      @default(FREE)
+  stripeCustomerId     String?   @unique
+  stripeSubscriptionId String?   @unique
   onboardedAt          DateTime?
   onboardingStep       Int?
   profilePhotoUrl      String?
   isAdmin              Boolean   @default(false)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
-  claims        NameClaim[]
-  pages         Page[]
-  monitoring    NameMonitoringRule[]
-  auditLogs     AuditLog[]
+  claims         NameClaim[]
+  pages          Page[]
+  monitoring     NameMonitoringRule[]
+  auditLogs      AuditLog[]
+  agentState     AgentState?
+  messages       ConversationMessage[]
+  approvals      ApprovalItem[]
+  workLogs       WorkLog[]
+  syncedProfiles SyncedProfile[]
+  publishedItems PublishedItem[]
+  pitches        Pitch[]
+  watchedQueries WatchedQuery[]
+  rankSnapshots  RankSnapshot[]
+}
+
+// ---------------------------------------------------------------------------
+// v2 — agent platform (product-plan-v2.md §2.1, milestones-v2.md §5)
+// Tables below are the v2 deltas ratified in M0. v1 tables above stay until
+// the M10 cutover migrates them into footprint entities.
+// ---------------------------------------------------------------------------
+
+enum PermissionLevel {
+  NEVER_TOUCH
+  DRAFT_ONLY
+  COPY_APPROVE
+  FULL_AUTO
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum SyncedProfileStatus {
+  DISCOVERED
+  CONNECTED
+  ERRORED
+  DISCONNECTED
+}
+
+enum PublishedItemStatus {
+  QUEUED
+  PUBLISHED
+  FAILED
+}
+
+enum PitchStatus {
+  MATCHED
+  DRAFTED
+  APPROVED
+  SENT
+  ACCEPTED
+  REJECTED
+  IGNORED
+}
+
+/**
+ * Per-user agent runtime state (one row per user, created lazily).
+ */
+model AgentState {
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  /**
+   * Footprint Graph: person → works → skills → profiles → queries (M2).
+   */
+  footprint          Json?
+  /**
+   * Permission envelope JSON — user-set policy the agent never overrides.
+   */
+  permissionEnvelope Json
+  /**
+   * Agent working notes / day-1 plan (opaque to the client).
+   */
+  notes              Json?
+  resumeUrl          String?
+  resumeParsedAt     DateTime?
+  discoveryScanAt    DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/**
+ * Chat with the per-user agent — the authenticated homepage (M1/M3).
+ */
+model ConversationMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  role      String // "user" | "agent" | "system"
+  content   String
+  toolCalls Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+/**
+ * Consequential agent actions awaiting one-tap user sign-off (M1+).
+ */
+model ApprovalItem {
+  id        String         @id @default(cuid())
+  userId    String
+  kind      String // e.g. "publish", "pitch", "profile-change", "transform"
+  title     String
+  summary   String?
+  payload   Json?
+  status    ApprovalStatus @default(PENDING)
+  decidedAt DateTime?
+  createdAt DateTime       @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+/**
+ * Immutable audit trail of every agent action (the user's work feed).
+ */
+model WorkLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String // e.g. "study.detected", "publish.sent", "track.snapshot"
+  tool      String?
+  status    String   @default("ok")
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
+
+/**
+ * A connected/known property of the user across the web (identity web).
+ */
+model SyncedProfile {
+  id          String              @id @default(cuid())
+  userId      String
+  platform    String // medium | linkedin | github | …
+  tier        String // "full-api" | "limited" | "closed" (product-plan-v2.md §2.3)
+  displayName String?
+  url         String?
+  descriptor  String?
+  status      SyncedProfileStatus @default(DISCOVERED)
+  /**
+   * Encrypted OAuth token reference — plaintext never stored.
+   */
+  oauthRef    String?
+  lastSyncAt  DateTime?
+  createdAt   DateTime            @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/**
+ * Every syndicated/placed copy of a user's own work.
+ */
+model PublishedItem {
+  id           String              @id @default(cuid())
+  userId       String
+  /**
+   * Footprint work id — plain ref until M5 migration of ImportedContent.
+   */
+  sourceId     String?
+  platform     String
+  url          String?
+  canonicalUrl String?
+  status       PublishedItemStatus @default(QUEUED)
+  publishedAt  DateTime?
+  createdAt    DateTime            @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/**
+ * Curated, continuously maintained DB of pitchable surfaces (M6).
+ */
+model PitchOpportunity {
+  id           String   @id @default(cuid())
+  vertical     String // first vertical: "consultants-execs" (milestones-v2.md §8)
+  niche        String?
+  platformType String // podcast | publication | directory | conference | …
+  name         String
+  contactUrl   String?
+  notes        String?
+  acceptsGuest Boolean  @default(true)
+  source       String   @default("manual")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  pitches Pitch[]
+
+  @@index([vertical, active])
+}
+
+/**
+ * One pitch run on the user's behalf (M6).
+ */
+model Pitch {
+  id            String      @id @default(cuid())
+  userId        String
+  opportunityId String
+  status        PitchStatus @default(MATCHED)
+  angle         String?
+  sentAt        DateTime?
+  replyAt       DateTime?
+  replyStatus   String?
+  notes         Json?
+  createdAt     DateTime    @default(now())
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  opportunity PitchOpportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([opportunityId])
+}
+
+/**
+ * Query the user's name is being ranked for (M7).
+ */
+model WatchedQuery {
+  id               String   @id @default(cuid())
+  userId           String
+  query            String
+  professionTagged Boolean  @default(false)
+  active           Boolean  @default(true)
+  createdAt        DateTime @default(now())
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rankSnapshots RankSnapshot[]
+
+  @@unique([userId, query])
+  @@index([userId])
+}
+
+/**
+ * SERP position capture for a watched query (M7).
+ */
+model RankSnapshot {
+  id             String   @id @default(cuid())
+  userId         String
+  watchedQueryId String
+  query          String
+  position       Int?
+  url            String?
+  raw            Json?
+  capturedAt     DateTime @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  watchedQuery WatchedQuery @relation(fields: [watchedQueryId], references: [id], onDelete: Cascade)
+
+  @@index([userId, query, capturedAt])
 }
 
 model NewsletterSubscriber {
@@ -106,27 +363,27 @@ model NameClaim {
 }
 
 model Page {
-  id              String     @id @default(cuid())
-  ownerId         String
-  isHub           Boolean    @default(false)
-  path            String     @unique
-  title           String
-  metaTitle       String?
-  metaDescription String?
-  descriptor      String?
-  status          PageStatus @default(DRAFT)
-  seoScore        Int?
-  customDomain    String?    @unique
-  customDomainToken String?
+  id                     String     @id @default(cuid())
+  ownerId                String
+  isHub                  Boolean    @default(false)
+  path                   String     @unique
+  title                  String
+  metaTitle              String?
+  metaDescription        String?
+  descriptor             String?
+  status                 PageStatus @default(DRAFT)
+  seoScore               Int?
+  customDomain           String?    @unique
+  customDomainToken      String?
   customDomainVerifiedAt DateTime?
-  publishedAt     DateTime?
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
+  publishedAt            DateTime?
+  createdAt              DateTime   @default(now())
+  updatedAt              DateTime   @updatedAt
 
-  owner      User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  blocks     ContentBlock[]
-  connectors ImportConnector[]
-  showcase   ShowcaseEntry?
+  owner         User               @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  blocks        ContentBlock[]
+  connectors    ImportConnector[]
+  showcase      ShowcaseEntry?
   searchConsole SearchConsoleLink?
 
   @@index([ownerId])
@@ -134,13 +391,13 @@ model Page {
 }
 
 model ContentBlock {
-  id      String           @id @default(cuid())
-  pageId  String
-  type    ContentBlockType
-  payload Json
-  order   Int              @default(0)
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  id        String           @id @default(cuid())
+  pageId    String
+  type      ContentBlockType
+  payload   Json
+  order     Int              @default(0)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
 
   page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
@@ -148,13 +405,13 @@ model ContentBlock {
 }
 
 model ImportConnector {
-  id            String              @id @default(cuid())
-  pageId        String
-  type          ImportConnectorType
-  externalUrl   String
-  autoSync      Boolean             @default(false)
-  lastSyncedAt  DateTime?
-  createdAt     DateTime            @default(now())
+  id           String              @id @default(cuid())
+  pageId       String
+  type         ImportConnectorType
+  externalUrl  String
+  autoSync     Boolean             @default(false)
+  lastSyncedAt DateTime?
+  createdAt    DateTime            @default(now())
 
   page     Page              @relation(fields: [pageId], references: [id], onDelete: Cascade)
   contents ImportedContent[]
@@ -163,13 +420,13 @@ model ImportConnector {
 }
 
 model ImportedContent {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   connectorId String
   title       String
   url         String
   content     String?
   publishedAt DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   connector ImportConnector @relation(fields: [connectorId], references: [id], onDelete: Cascade)
 
@@ -186,11 +443,11 @@ model Keyword {
 }
 
 model NameMonitoringRule {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   userId        String
   nameToMonitor String
   lastAlertAt   DateTime?
-  createdAt     DateTime @default(now())
+  createdAt     DateTime  @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -198,12 +455,12 @@ model NameMonitoringRule {
 }
 
 model SearchConsoleLink {
-  id                String   @id @default(cuid())
-  pageId            String   @unique
+  id                String    @id @default(cuid())
+  pageId            String    @unique
   propertyUrl       String
   oauthRefreshToken String
   lastImportAt      DateTime?
-  createdAt         DateTime @default(now())
+  createdAt         DateTime  @default(now())
 
   page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
@@ -243,7 +500,9 @@ model MagicLinkToken {
   id        String    @id @default(cuid())
   tokenHash String    @unique
   email     String
-  /** Token purpose: MAGIC_LINK (default), EMAIL_VERIFY, PASSWORD_RESET. */
+  /**
+   * Token purpose: MAGIC_LINK (default), EMAIL_VERIFY, PASSWORD_RESET.
+   */
   purpose   String    @default("MAGIC_LINK")
   expiresAt DateTime
   usedAt    DateTime?
