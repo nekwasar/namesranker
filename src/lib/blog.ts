@@ -467,6 +467,14 @@ export const blogPosts: BlogPost[] = [
       { h: "One plan, one honest trial" },
       "$1 unlocks seven full days of everything — your personal agent at full power, no limits, nothing held back. On day 8 your membership auto-converts to $9/month, our launch rate for early members. The standard rate is $29/month, and it only applies after the launch window closes.",
       "There is no Basic, Pro, and Enterprise ladder. There is no feature locked behind a higher tier. Publishing, pitching, rank tracking, monitoring, custom domains — everything is included in the one plan.",
+      {
+        ul: [
+          "$1 for seven full days — every feature, no limits.",
+          "Day 8: auto-converts to $9/month, the launch rate for early members.",
+          "New members after the launch window pay the standard $29/month.",
+          "Cancel in-trial and the $1 is refunded — nothing else is ever charged.",
+        ],
+      },
       { h: "What the $1 buys (and filters)" },
       "The $1 isn't a fee — it's a filter with a side effect. It collects a card so day-8 conversion is automatic (momentum matters in ranking), and it makes sure everyone in the trial actually intends to rank their name. The side effect: seven days of a real engine working on your name costs less than a coffee.",
       "Cancel during the seven days and you're never charged the monthly rate — the dollar is refunded. Cancel after and the engine stops at the end of your billing period, cleanly.",
