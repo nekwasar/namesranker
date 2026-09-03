@@ -53,7 +53,7 @@ export default function LoginForm() {
     const data = (await res.json().catch(() => ({}))) as { error?: string; next?: string };
 
     if (res.ok) {
-      router.push(data.next ?? "/settings");
+      router.push(data.next ?? "/chat");
       router.refresh();
       return;
     }

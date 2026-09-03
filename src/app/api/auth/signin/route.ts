@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
   await setSessionCookie({ sub: user.id, email: user.email, plan: user.plan });
 
-  const fallback = user.onboardedAt ? "/settings" : "/onboarding";
+  const fallback = user.onboardedAt ? "/chat" : "/onboarding";
   const next = safeRedirectPath(parsed.data.next ?? null, fallback);
   return NextResponse.json({ ok: true, next }, { status: 200 });
 }

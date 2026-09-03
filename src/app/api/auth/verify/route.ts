@@ -14,7 +14,7 @@ export const runtime = "nodejs";
  */
 export async function GET(req: NextRequest) {
   const rawToken = req.nextUrl.searchParams.get("token");
-  const next = req.nextUrl.searchParams.get("next") ?? "/settings";
+  const next = req.nextUrl.searchParams.get("next") ?? "/chat";
 
   // Redirects always use the canonical config.appUrl, never the request-derived
   // origin (the container's internal 0.0.0.0:3000 must not leak into links).
@@ -59,5 +59,5 @@ export async function GET(req: NextRequest) {
     plan: user.plan,
   });
 
-  return NextResponse.redirect(safeRedirectUrl(next, config.appUrl, "/settings"));
+  return NextResponse.redirect(safeRedirectUrl(next, config.appUrl, "/chat"));
 }

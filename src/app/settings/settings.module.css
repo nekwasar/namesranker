@@ -1,0 +1,98 @@
+/* Settings shell page — flat monochrome rows. */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowMain {
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 3px;
+}
+
+.rowSub {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+  max-width: 64ch;
+}
+
+.rowRight {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn,
+.btnGhost {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: 7px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.btn {
+  color: var(--surface);
+  background: var(--foreground);
+  border: 1px solid var(--foreground);
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btnGhost {
+  color: var(--foreground);
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+}
+
+.btnGhost:hover {
+  border-color: var(--foreground);
+}
+
+/* Legacy v1 managers (monitoring + Search Console) render below the shell
+   sections until M10 absorbs them into agent tools. */
+.managers {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  margin-top: 44px;
+  padding-top: 34px;
+  border-top: 1px solid var(--hairline);
+}
+
+@media (max-width: 640px) {
+  .row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

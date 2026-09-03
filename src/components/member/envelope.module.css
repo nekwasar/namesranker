@@ -1,0 +1,109 @@
+/* Permission envelope editor — flat rows, segmented level buttons. */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 28px;
+  align-items: start;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.row:first-child {
+  padding-top: 0;
+}
+
+.rowText {
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 3px;
+}
+
+.rowDesc {
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0 0 6px;
+  max-width: 52ch;
+}
+
+.rowLevelNote {
+  font-size: 0.78rem;
+  color: var(--faint);
+  margin: 0;
+}
+
+.levels {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 320px;
+}
+
+.level {
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition:
+    color 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease;
+}
+
+.level:hover:not(:disabled) {
+  color: var(--foreground);
+  border-color: var(--foreground);
+}
+
+.levelActive {
+  color: var(--surface);
+  background: var(--foreground);
+  border-color: var(--foreground);
+}
+
+.level:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.foot {
+  font-size: 0.85rem;
+  margin: 16px 0 0;
+}
+
+.error {
+  color: #b00020;
+}
+
+.ok {
+  color: #1a7f37;
+  font-weight: 600;
+}
+
+@media (max-width: 760px) {
+  .row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .levels {
+    justify-content: flex-start;
+    max-width: none;
+  }
+}

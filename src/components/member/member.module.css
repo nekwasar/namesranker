@@ -1,0 +1,351 @@
+/* Member app shell — monochrome brand (off-white bg, black ink, hairline rules). */
+
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: rgba(247, 246, 242, 0.9);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.headerInner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.brand {
+  font-family: var(--font-noto-serif), Georgia, serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--foreground);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.navLink {
+  padding: 7px 13px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--muted);
+  border-radius: 7px;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.navLink:hover {
+  color: var(--foreground);
+  background: rgba(10, 10, 10, 0.05);
+}
+
+.navActive {
+  color: var(--foreground);
+  font-weight: 600;
+  border-bottom-color: var(--foreground);
+}
+
+.headerRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.email {
+  font-size: 0.82rem;
+  color: var(--faint);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.siteLink {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--foreground);
+  white-space: nowrap;
+  padding: 7px 12px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 7px;
+  transition: border-color 0.15s ease;
+}
+
+.siteLink:hover {
+  border-color: var(--foreground);
+}
+
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px 96px;
+}
+
+/* --- Page scaffolding --- */
+
+.pageHeader {
+  padding: 56px 0 28px;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+  margin-bottom: 14px;
+}
+
+.pageTitle {
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+  line-height: 1.1;
+  margin: 0 0 14px;
+}
+
+.pageSubtitle {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 56ch;
+  margin: 0;
+}
+
+.section {
+  padding: 26px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.section:last-of-type {
+  border-bottom: none;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.sectionTitle {
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--foreground);
+  margin: 0 0 4px;
+}
+
+.sectionDesc {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+  max-width: 62ch;
+}
+
+.sectionAction {
+  flex-shrink: 0;
+}
+
+/* --- Flat rows (no cards) --- */
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowMain {
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 2px;
+}
+
+.rowSub {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.rowMeta {
+  font-size: 0.78rem;
+  color: var(--faint);
+  margin-top: 3px;
+}
+
+.rowRight {
+  flex-shrink: 0;
+}
+
+/* --- Buttons & links --- */
+
+.btn {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--foreground);
+  border: 1px solid var(--foreground);
+  border-radius: 7px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition:
+    opacity 0.15s ease,
+    transform 0.1s ease;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btnGhost {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--foreground);
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 7px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: border-color 0.15s ease;
+}
+
+.btnGhost:hover:not(:disabled) {
+  border-color: var(--foreground);
+}
+
+.btnDanger {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #b00020;
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 7px 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btnDanger:hover {
+  border-color: rgba(176, 0, 32, 0.4);
+  border-radius: 7px;
+}
+
+.link {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(10, 10, 10, 0.3);
+}
+
+/* --- Status pills (flat, no card) --- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--foreground);
+  border: 1px solid var(--hairline-strong);
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+
+.pillOk {
+  color: #1a7f37;
+  border-color: rgba(26, 127, 55, 0.35);
+}
+
+.pillMuted {
+  color: var(--faint);
+  border-color: var(--hairline);
+}
+
+.empty {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--faint);
+  padding: 14px 2px;
+}
+
+@media (max-width: 640px) {
+  .headerInner {
+    gap: 12px;
+    padding: 0 16px;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 60px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .headerRight .email {
+    display: none;
+  }
+  .main {
+    padding: 0 16px 72px;
+  }
+  .navLink {
+    padding: 7px 9px;
+    font-size: 0.85rem;
+  }
+}

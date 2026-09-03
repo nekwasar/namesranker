@@ -18,9 +18,9 @@ export default async function OnboardingPage({
   const user = await requireUser();
   const state = await getOnboardingState(user.sub);
 
-  // Wizard completed → returning users land in Settings (spec §9).
+  // Wizard completed → members land in chat, the v2 home (M1).
   if (state.completed) {
-    redirect("/settings");
+    redirect("/chat");
   }
 
   // Explicit ?step= wins; otherwise resume at the first incomplete step.

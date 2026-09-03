@@ -1,0 +1,145 @@
+/* Profile page — flat monochrome rows. */
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 2px;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.rowMain {
+  min-width: 0;
+}
+
+.rowTitle {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 3px;
+  overflow-wrap: anywhere;
+}
+
+.rowSub {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.descriptor {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.mutedInline {
+  color: var(--faint);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.rowActions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1a7f37;
+  border: 1px solid rgba(26, 127, 55, 0.35);
+  border-radius: 999px;
+  padding: 3px 11px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.pillMuted {
+  color: var(--faint);
+  border-color: var(--hairline);
+}
+
+.position {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--foreground);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.positionFirst {
+  color: #1a7f37;
+}
+
+.empty {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--faint);
+  padding: 8px 2px;
+  margin: 0;
+}
+
+.footnote {
+  font-size: 0.82rem;
+  color: var(--faint);
+  margin-top: 28px;
+}
+
+.btn {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--surface);
+  background: var(--foreground);
+  border: 1px solid var(--foreground);
+  border-radius: 7px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 0.15s ease;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btnGhost {
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--foreground);
+  background: transparent;
+  border: 1px solid var(--hairline-strong);
+  border-radius: 7px;
+  padding: 8px 16px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: border-color 0.15s ease;
+}
+
+.btnGhost:hover {
+  border-color: var(--foreground);
+}
+
+@media (max-width: 640px) {
+  .row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}

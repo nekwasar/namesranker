@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth/session";
 
-const PROTECTED_PREFIXES = ["/settings", "/onboarding", "/admin"];
+const PROTECTED_PREFIXES = ["/chat", "/profile", "/settings", "/onboarding", "/admin"];
 
 // Canonical origin for auth redirects — never req.nextUrl.origin, which can
 // resolve to the container's internal 0.0.0.0:3000 behind a reverse proxy.

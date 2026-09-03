@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import styles from "./settings.module.css";
 
 export default function ManageBilling() {
   const [busy, setBusy] = useState(false);
@@ -32,6 +33,7 @@ export default function ManageBilling() {
     <span>
       <button
         type="button"
+        className={styles.btnGhost}
         onClick={() => void open()}
         disabled={busy}
         data-testid="manage-billing"

@@ -218,8 +218,8 @@ export default function NameClaimForm({ premium }: { premium: boolean }) {
             >
               Continue — step 2 of 7
             </button>
-            <Link href="/settings" className={styles.ghostLink}>
-              Go to settings
+            <Link href="/chat" className={styles.ghostLink}>
+              Go to your agent
             </Link>
           </div>
         </div>

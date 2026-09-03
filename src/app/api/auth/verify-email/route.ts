@@ -32,6 +32,6 @@ export async function GET(req: NextRequest) {
 
   await setSessionCookie({ sub: user.id, email: user.email, plan: user.plan });
 
-  const fallback = user.onboardedAt ? "/settings" : "/onboarding";
+  const fallback = user.onboardedAt ? "/chat" : "/onboarding";
   return NextResponse.redirect(safeRedirectUrl(next, config.appUrl, fallback));
 }

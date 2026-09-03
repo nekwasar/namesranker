@@ -101,7 +101,7 @@ export async function createBillingPortalSession(params: {
 }) {
   const session = await stripe().billingPortal.sessions.create({
     customer: params.customerId,
-    return_url: `${config.appUrl}${params.returnPath ?? "/settings"}`,
+    return_url: `${config.appUrl}${params.returnPath ?? "/chat"}`,
   });
   return { url: session.url };
 }

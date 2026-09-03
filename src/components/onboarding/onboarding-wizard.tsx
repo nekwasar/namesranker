@@ -67,7 +67,7 @@ export default function OnboardingWizard({
       }
       const { nextStep } = (await res.json()) as { nextStep: number };
       if (nextStep === step) {
-        router.push("/settings");
+        router.push("/chat");
       } else {
         router.push(`/onboarding?step=${nextStep}`);
       }
@@ -133,7 +133,7 @@ export default function OnboardingWizard({
             </p>
           ) : null}
           <p className={styles.exitLink}>
-            <a href="/settings">Save progress &amp; exit to settings</a>
+            <a href="/chat">Save progress &amp; go to your agent</a>
           </p>
         </div>
 
@@ -695,8 +695,8 @@ function PublishSuccess({ url, path }: { url: string; path: string }) {
         Add the official NamesRanker badge to your LinkedIn, email signature, or business card —
         it&apos;s a natural backlink to your page.
       </p>
-      <a href="/settings" className={styles.primaryButton} data-testid="publish-to-settings">
-        Go to settings
+      <a href="/chat" className={styles.primaryButton} data-testid="publish-to-settings">
+        Go to your agent
       </a>
     </div>
   );

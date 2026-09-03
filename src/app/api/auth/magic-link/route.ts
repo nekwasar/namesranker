@@ -59,10 +59,12 @@ export async function POST(req: NextRequest) {
 
   const verifyUrl = buildVerifyUrl(config.appUrl, rawToken);
 
-  // Spec §9: new users go to /onboarding, returning users to /settings.
+  // v2 (M1): sign-in lands on /chat — the agent is the member homepage.
+  // New users still pass through /onboarding until M2 replaces it with the
+  // resume flow.
   const isNew = !user.onboardedAt;
   const finalUrl = new URL(verifyUrl);
-  finalUrl.searchParams.set("next", isNew ? "/onboarding" : "/settings");
+  finalUrl.searchParams.set("next", isNew ? "/onboarding" : "/chat");
 
   await sendEmail(magicLinkEmail(email, finalUrl.toString()));
 
